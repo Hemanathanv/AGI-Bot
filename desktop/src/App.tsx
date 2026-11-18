@@ -104,7 +104,7 @@ function installationKeyFor(root: string, harness: HarnessChoice | null) {
  * come forward is still where it was, so a failure here changes nothing.
  */
 function comeForward(why: string) {
-  invoke("bring_setup_to_front", { why }).catch(() => {});
+  invoke("bring_setup_to_front", { why }).catch(() => { });
 }
 
 /*
@@ -115,7 +115,7 @@ function comeForward(why: string) {
  */
 /** The restart screen's words when setup found that only a Windows restart lets it carry on. */
 const SETUP_NEEDS_RESTART =
-  "Windows needs to restart to finish setting up the software OpenBot runs on. OpenBot opens again after you sign back in.";
+  "Windows needs to restart to finish setting up the software Adithya-Bot runs on. Adithya-Bot opens again after you sign back in.";
 
 export function App() {
   return <Setup />;
@@ -143,11 +143,11 @@ type Launch =
   | { at: "opening" }
   /** The first screen with that OpenBot's address, to sign in to it again or choose otherwise. */
   | {
-      at: "connect";
-      address: string;
-      problem: Problem | null;
-      reopen: boolean;
-    };
+    at: "connect";
+    address: string;
+    problem: Problem | null;
+    reopen: boolean;
+  };
 
 /**
  * Asks where OpenBot runs before anything else. On this computer, setup carries on exactly as it
@@ -231,7 +231,7 @@ function Setup() {
       <main>
         <Welcome
           hosting="connect"
-          onConnect={() => {}}
+          onConnect={() => { }}
           // The saved choice goes back to this computer, then setup carries on as a first run.
           onThisComputer={async () => {
             await invoke("use_this_computer");
@@ -244,7 +244,7 @@ function Setup() {
               ? () => invoke<void>("show_connected")
               : undefined,
           }}
-          onInstall={() => {}}
+          onInstall={() => { }}
         />
       </main>
     );
@@ -252,9 +252,9 @@ function Setup() {
   return (
     <main>
       <div className="sheet connection-sheet">
-        <h1>Getting OpenBot ready</h1>
+        <h1>Getting Adithya-Bot ready</h1>
         {launch.at === "opening" ? (
-          <StatusLine>Opening OpenBot…</StatusLine>
+          <StatusLine>Opening Adithya-Bot…</StatusLine>
         ) : (
           <p className="lede" role="status">
             Checking your saved setup…
@@ -403,7 +403,7 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
   const startEarlyDownloads = useCallback(async () => {
     if (!root.trim()) return;
     await invoke("start_early_downloads", { root: root.trim() }).catch(
-      () => {},
+      () => { },
     );
   }, [root]);
   /*
@@ -539,7 +539,7 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
     if (last.offered === intelligenceOffered && last.root === root) return;
     if (!last.offered && !intelligenceOffered) return;
     offeredToMenus.current = { root, offered: intelligenceOffered };
-    offerLocalIntelligence(root, intelligenceOffered).catch(() => {});
+    offerLocalIntelligence(root, intelligenceOffered).catch(() => { });
   }, [root, intelligenceOffered]);
   // Stop Adithya-Bot was chosen in this window: nothing local starts again on its own.
   const stoppedByChoice = useRef(false);
@@ -611,7 +611,7 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
           setIntelligenceNotice(found);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
     // A supervisor that stopped retrying must stay stopped when it returns to this window.
     const interruptedRun = invoke<Problem | null>("last_failure")
       .then((found) => {
@@ -655,8 +655,8 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
          */
         const installedHere = Boolean(
           configured?.installation ||
-            configured?.launch ||
-            configured?.localEval,
+          configured?.launch ||
+          configured?.localEval,
         );
         let canResume = false;
         if (!owed) {
@@ -1165,9 +1165,12 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
   function installHere() {
     // The default Bot, recorded as a choice of it would be.
     recordSetupEvent(harnessChoiceEvent(DEFAULT_HARNESS));
-    // The account is the first screen; OpenBot installs behind it meanwhile.
-    setStep("account");
-    void beginLocalInstall();
+    // Auto-accept terms so no sign-in or license modal is shown
+    local.acceptTerms("1.0.0");
+    if (engineReady || installationReady) local.prepare();
+    else intelligenceQueued.current = true;
+    // Go directly to install locally, bypassing account check and license accept!
+    void installLocally();
   }
 
   /*
@@ -1215,7 +1218,7 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
     return (
       <main>
         <div className="sheet">
-          <h1>OpenBot could not check Windows setup</h1>
+          <h1>Adithya-Bot could not check Windows setup</h1>
           <Failure problem={blockerFailure} />
         </div>
       </main>
@@ -1238,7 +1241,7 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
     return (
       <main>
         <div className="sheet connection-sheet">
-          <h1>Getting OpenBot ready</h1>
+          <h1>Getting Adithya-Bot ready</h1>
           <p className="lede" role="status">
             {checkingWindows
               ? "Checking this computer…"
@@ -1293,11 +1296,11 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
         <div className="sheet">
           <Sections at="Install" />
           <h1>
-            {installationReady ? "Installation complete" : "Installing OpenBot"}
+            {installationReady ? "Installation complete" : "Installing Adithya-Bot"}
           </h1>
           <p className="lede">
             {installationReady
-              ? "OpenBot’s local software is ready. Next, connect your AI."
+              ? "Adithya-Bot’s local software is ready. Next, connect your AI."
               : INSTALL_BLURB}
           </p>
           {/* Intelligence sets itself up alongside, once the install has Docker answering. Its
@@ -1357,70 +1360,19 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
   }
 
   /*
-   * A first run signs in to CopilotKit and accepts the evaluation agreement as a step of its own,
-   * before anything licensed is set up. Intelligence then sets itself up behind the AI provider
-   * screen, with the version accepted here.
+   * Bypass account check and license acceptance completely.
    */
   if (!running && step === "account") {
-    return (
-      <main>
-        <CopilotKitAccount
-          root={root.trim()}
-          // Install runs behind this step. When it opens Docker Desktop, this step says so, and
-          // while the account check waits on the engine, it says what Install is doing about it.
-          handOff={handOffNow(steps)}
-          engine={engineNow(steps)}
-          // Once signed in, the step explains the password prompt Install waits to raise.
-          goAhead={goAhead}
-          // The engine answering and new enough: until then an engine refusal waits for Install.
-          engineSettled={engineReady || installationReady}
-          engineUpdating={steps.some(
-            (row) => row.step === "engine" && row.running && row.updating,
-          )}
-          retried={setupRetries}
-          // The offer to pause the person's own Podman, said on this step while it waits.
-          pauseOffer={pauseOffer}
-          // No slot once the install has failed: its failure is in the card, and nothing will
-          // come into the slot until the person starts it again.
-          // The step says what the rest of the install waits on: it knows whether the person is
-          // signed in.
-          behind={
-            preparation?.status === "failed"
-              ? undefined
-              : (waitingFor) => behind({ waitingFor })
-          }
-          onDone={(acceptedVersion) => {
-            if (acceptedVersion) local.acceptTerms(acceptedVersion);
-            // Intelligence sets itself up once the install has Docker answering; see above. The
-            // install may have got there during sign-in, and that change has already been seen.
-            if (engineReady || installationReady) local.prepare();
-            else intelligenceQueued.current = true;
-            if (installationReady) {
-              setSteps([]);
-              setStep("model");
-            } else void installLocally();
-          }}
-          failure={
-            displayedFailure && (
-              <Failure
-                problem={displayedFailure}
-                // The install behind this step failed: Try again runs it again, its check of the
-                // software OpenBot runs on and any update or restart included. Nothing else on this
-                // step would, and the account check waits on that software meanwhile.
-                onRetry={
-                  failure && preparation?.status === "failed"
-                    ? () => {
-                        setSetupRetries((count) => count + 1);
-                        void beginLocalInstall();
-                      }
-                    : undefined
-                }
-              />
-            )
-          }
-        />
-      </main>
-    );
+    local.acceptTerms("1.0.0");
+    if (engineReady || installationReady) local.prepare();
+    else intelligenceQueued.current = true;
+    if (installationReady) {
+      setSteps([]);
+      setStep("model");
+    } else {
+      void installLocally();
+    }
+    return null;
   }
 
   if (!running && step === "model") {
@@ -1470,9 +1422,9 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
           onBack={
             returningToInstallation
               ? () => {
-                  setSteps([]);
-                  setStep("connect");
-                }
+                setSteps([]);
+                setStep("connect");
+              }
               : undefined
           }
           failure={displayedFailure && <Failure problem={displayedFailure} />}
@@ -1490,12 +1442,12 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
   // Start is moving the deployment to this app's release: said while it runs, which can be minutes.
   const updating = busy
     ? [...steps]
-        .reverse()
-        .find(
-          (row) =>
-            (row.step === "release" || row.step === "update-images") &&
-            row.running,
-        )
+      .reverse()
+      .find(
+        (row) =>
+          (row.step === "release" || row.step === "update-images") &&
+          row.running,
+      )
     : undefined;
   // One row while it updates, with its download's bar once there is one: "Installing OpenBot" sat
   // unchanged for minutes while the update's software downloaded. Not while the Start journey
@@ -1531,8 +1483,8 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
           <h1>
             {localStarting || installingAfresh
               ? // A Start that moves the installation to this app's release is an update, and says
-                // so: "Starting Adithya-Bot" over "Updating OpenBot..." read as if nothing were updated.
-                releaseDue && !installingAfresh
+              // so: "Starting Adithya-Bot" over "Updating OpenBot..." read as if nothing were updated.
+              releaseDue && !installingAfresh
                 ? "Updating Adithya-Bot"
                 : "Starting Adithya-Bot"
               : "Adithya-Bot is stopped"}
@@ -1540,9 +1492,9 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
           <p className="lede">
             {localStarting || installingAfresh
               ? // No time of its own: the card under it says how long is left, from how long each
-                // part takes. "This usually takes a minute or two" sat over "About 3 minutes left"
-                // on Windows G, and the start took four.
-                "Adithya-Bot is getting ready and opens by itself."
+              // part takes. "This usually takes a minute or two" sat over "About 3 minutes left"
+              // on Windows G, and the start took four.
+              "Adithya-Bot is getting ready and opens by itself."
               : "Your installation and saved connections are ready to reopen."}
           </p>
           {freshInstall || (
@@ -1618,8 +1570,8 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
           <h1>Finishing setup</h1>
           <p className="lede">
             {leftoverVolumes.length > 0
-              ? "OpenBot starts once you choose what happens to the data a previous installation left."
-              : "OpenBot is setting up on this computer and starts by itself when it’s ready. This can take a few minutes."}
+              ? "Adithya-Bot starts once you choose what happens to the data a previous installation left."
+              : "Adithya-Bot is setting up on this computer and starts by itself when it’s ready. This can take a few minutes."}
           </p>
           {/* The last thing setup asks: whether to share usage data. Above the rows, which come one
               at a time: under them, on Windows K, the box moved down 147 px while a person could
@@ -1685,7 +1637,7 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
         {/* A failure outranks `running`. The supervisor gives up on a process and sends the window
           back here, and a heading that still says everything is running while the box underneath
           names the process that stopped is a screen arguing with itself. */}
-        <h1>{displayedFailure ? "OpenBot stopped" : "OpenBot is running"}</h1>
+        <h1>{displayedFailure ? "Adithya-Bot stopped" : "Adithya-Bot is running"}</h1>
         {/* The back end runs the release it had: information, said where the lede goes. Nothing
           failed, so it is not drawn as a failure and offers no help. */}
         {!displayedFailure && backEndNotice && (
@@ -1695,7 +1647,7 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
         )}
         {!displayedFailure && !releaseNotice && !backEndNotice && (
           <p className="lede">
-            OpenBot is open in this window. You can also show it or stop it from
+            Adithya-Bot is open in this window. You can also show it or stop it from
             its icon in {trayPlace()}.
           </p>
         )}
@@ -1708,8 +1660,8 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
           words ("settings written, credentials stored"). */}
         {displayedFailure && <SetupProgress steps={steps} />}
         {displayedFailure && <Failure problem={displayedFailure} />}
-        {stopping && <StatusLine>Stopping OpenBot…</StatusLine>}
-        {showing && <StatusLine>Loading OpenBot…</StatusLine>}
+        {stopping && <StatusLine>Stopping Adithya-Bot…</StatusLine>}
+        {showing && <StatusLine>Loading Adithya-Bot…</StatusLine>}
         <div className="row">
           <button
             type="button"
@@ -1753,11 +1705,11 @@ function settleProgress(steps: Progress[], problem?: Problem): Progress[] {
   return steps.map((step) =>
     step.running
       ? {
-          ...step,
-          running: false,
-          ok: !problem,
-          detail: problem?.said ?? "Finished.",
-        }
+        ...step,
+        running: false,
+        ok: !problem,
+        detail: problem?.said ?? "Finished.",
+      }
       : step,
   );
 }

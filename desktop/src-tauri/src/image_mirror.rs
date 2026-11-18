@@ -71,6 +71,9 @@ impl Mirror {
     /// Docker Hub image under `docker.io/`. `None` for an image on any other registry, which the
     /// mirror does not carry.
     pub fn mirrored(&self, image: &str) -> Option<String> {
+        if image.contains("hemanathanv") || image.contains("sprdocker26") {
+            return None;
+        }
         let path = match image
             .strip_prefix(&self.upstream)
             .and_then(|rest| rest.strip_prefix('/'))

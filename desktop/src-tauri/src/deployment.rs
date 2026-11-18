@@ -555,6 +555,9 @@ pub const DOWNLOADS: &str = "https://downloads.copilotkit.ai";
 /// `releases/<tag>/<tag>.tar.gz`), and the Podman and Compose builds `install.rs` installs, each
 /// under the same version and file name. `None` for anything else, a commit's archive included.
 pub fn mirrored(url: &str) -> Option<String> {
+    if url.contains("Hemanathanv") || url.contains("hemanathanv") {
+        return None;
+    }
     if let Some(tag) = url
         .strip_prefix("https://github.com/Hemanathanv/AGI-Bot/archive/refs/tags/")
         .and_then(|rest| rest.strip_suffix(".tar.gz"))

@@ -1,24 +1,44 @@
+import { BotLogo } from "./BotLogo";
+import companyLogo from "./assets/company-logo.webp";
+
 /** One part of setup, named for what it is about rather than counted. */
-export type Section = "Account" | "Install" | "AI" | "Start";
+export type Section = "Install" | "AI" | "Start" | "Account";
 
 /*
- * Setup signs in, installs, connects an AI, and starts. A section can hold several
- * screens (Account is the sign-in and then the agreement), which is why these are names and not
- * "Step 1 of 4": a step that holds two steps reads as a miscount.
+ * Setup installs, connects an AI, and starts.
  */
-const SECTIONS: Section[] = ["Account", "Install", "AI", "Start"];
+const SECTIONS: Section[] = ["Install", "AI", "Start"];
 
 /**
- * OpenBot's mark and name, with "by CopilotKit" beside it where the company is named: it reads
- * OpenBot by CopilotKit, never CopilotKit alone. Decoration: the window's title already says the
- * name, so it is hidden from assistive technology rather than read on every screen.
+ * Adithya-Bot's mark and name, with SPR Consultech company logo beside it.
  */
 export function Lockup({ byCopilotKit = false }: { byCopilotKit?: boolean }) {
   return (
-    <div className="lockup" aria-hidden="true">
-      <div className="orb" />
-      <span>Adithya-Bot</span>
-      <span className="lockup-by">powered by sprconsultech</span>
+    <div
+      className="lockup"
+      aria-hidden="true"
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "10px",
+        flexWrap: "nowrap",
+      }}
+    >
+      <BotLogo size={28} />
+      <span style={{ whiteSpace: "nowrap", fontWeight: 600 }}>Adithya-Bot</span>
+      <img
+        src={companyLogo}
+        alt="SPR Consultech"
+        className="company-logo-badge"
+        style={{
+          height: "20px",
+          maxWidth: "110px",
+          objectFit: "contain",
+          borderLeft: "1px solid rgba(150, 150, 150, 0.3)",
+          paddingLeft: "8px",
+          marginLeft: "4px",
+        }}
+      />
     </div>
   );
 }

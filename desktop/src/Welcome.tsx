@@ -1,5 +1,7 @@
 import { IconBuilding, IconCloud, IconDeviceLaptop } from "@tabler/icons-react";
 import { type ReactNode, useState } from "react";
+import { BotLogo } from "./BotLogo";
+import companyLogo from "./assets/company-logo.webp";
 import { ConnectToOpenBot, useConnectToOpenBot } from "./ConnectToOpenBot";
 import {
   EarlyDownloadsLine,
@@ -10,7 +12,7 @@ import { ExternalLink } from "./ExternalLink";
 import type { Problem } from "./Problem";
 
 /** Adithya-Bot's one booking link. */
-export const BOOK_A_DEMO = "https://open.bot/business";
+export const BOOK_A_DEMO = "https://sprconsultech.com";
 
 /**
  * The least a computer needs to run every part of Adithya-Bot itself.
@@ -94,10 +96,30 @@ export function Welcome({
   const connect = hosting === "connect";
   return (
     <div className="sheet">
-      <div className="lockup">
-        <div className="orb" aria-hidden="true" />
-        <span>Adithya-Bot</span>
-        <span className="lockup-by">powered by sprconsultech</span>
+      <div
+        className="lockup"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "10px",
+          flexWrap: "nowrap",
+        }}
+      >
+        <BotLogo size={32} />
+        <span style={{ whiteSpace: "nowrap", fontWeight: 600 }}>Adithya-Bot</span>
+        <img
+          src={companyLogo}
+          alt="SPR Consultech"
+          className="company-logo-badge"
+          style={{
+            height: "24px",
+            maxWidth: "120px",
+            objectFit: "contain",
+            borderLeft: "1px solid rgba(150, 150, 150, 0.3)",
+            paddingLeft: "10px",
+            marginLeft: "6px",
+          }}
+        />
       </div>
       <h1>Set up Adithya-Bot</h1>
       <fieldset className="picker hosting">
