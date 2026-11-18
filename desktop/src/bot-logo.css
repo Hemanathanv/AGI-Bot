@@ -1,0 +1,83 @@
+.circular-bot-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #38bdf8 0%, #1e40af 50%, #0f172a 100%);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.5), inset 0 0 6px rgba(255, 255, 255, 0.5);
+  box-sizing: border-box;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.circular-bot-logo:hover {
+  transform: scale(1.05);
+}
+
+.bot-head {
+  width: 90%;
+  height: 90%;
+  border-radius: 50%;
+  background: #090d16;
+  border: 1.5px solid rgba(56, 189, 248, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.bot-visor {
+  width: 76%;
+  height: 52%;
+  background: #030712;
+  border-radius: 9999px;
+  border: 1px solid rgba(56, 189, 248, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 10%;
+  box-sizing: border-box;
+  box-shadow: inset 0 0 8px rgba(14, 165, 233, 0.35);
+}
+
+.bot-eye {
+  width: 30%;
+  height: 60%;
+  background: #00f0ff;
+  border-radius: 9999px;
+  box-shadow: 0 0 6px #00f0ff, 0 0 12px rgba(0, 240, 255, 0.85);
+  animation: bot-eye-blink 3.8s infinite ease-in-out;
+  transform-origin: center center;
+}
+
+.bot-eye-right {
+  animation-delay: 0.04s;
+}
+
+@keyframes bot-eye-blink {
+  0%, 86%, 94%, 100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  88%, 92% {
+    transform: scaleY(0.08);
+    opacity: 0.5;
+  }
+  90% {
+    transform: scaleY(0.03);
+    opacity: 0.2;
+  }
+}
+
+.company-logo-badge {
+  height: 22px;
+  max-width: 120px;
+  object-fit: contain;
+  margin-left: 10px;
+  border-left: 1px solid rgba(255, 255, 255, 0.18);
+  padding-left: 10px;
+  vertical-align: middle;
+}

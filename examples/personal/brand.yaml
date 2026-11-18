@@ -1,0 +1,4 @@
+tenant:
+  id: adithyabot
+  former_ids: [openbot, personal]
+  product_name: Adithya-Bot

@@ -1,0 +1,97 @@
+name: Build Windows EXE Bundle
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: 'Build channel (release or internal)'
+        required: true
+        default: 'release'
+        type: choice
+        options:
+          - release
+          - internal
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    name: Build Windows Installer (.exe)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.3
+          no-cache: true
+
+      - name: Setup Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
+        with:
+          toolchain: stable
+
+      - name: Install Desktop Dependencies
+        working-directory: desktop
+        run: bun install --frozen-lockfile
+
+      - name: Prepare Build Version
+        shell: bash
+        working-directory: desktop
+        env:
+          CHANNEL: ${{ inputs.channel || 'release' }}
+        run: bun scripts/desktop-version.ts "$CHANNEL"
+
+      - name: Bundle the Intelligence CLI
+        shell: bash
+        working-directory: desktop
+        run: |
+          bun scripts/cli-bundle.ts win32 x64
+
+      - name: Fetch Tauri Bundling Tools (NSIS)
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: desktop/scripts/prefetch-tauri-tools.sh windows
+
+      - name: Build Tauri Desktop (.exe)
+        shell: bash
+        working-directory: desktop
+        env:
+          OPENBOT_BUNDLED_CLI: "1"
+        run: |
+          bun run tauri build --config src-tauri/tauri.build-version.conf.json --config src-tauri/tauri.bundled-cli.conf.json -- --locked
+
+      - name: Find and Upload EXE Artifact
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: Adithya-Bot-Windows-x64-Setup
+          path: desktop/src-tauri/target/release/bundle/nsis/*.exe
+          if-no-files-found: error
+
+      - name: Publish to GitHub Releases
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="v$(node -p 'require("./package.json").version')"
+          tag="${GITHUB_REF_NAME:-$version}"
+          if [[ "$tag" != v* ]]; then tag="$version"; fi
+          echo "Publishing to Release tag: $tag"
+          gh release view "$tag" || gh release create "$tag" --title "Adithya-Bot $tag" --notes "Adithya-Bot Desktop Installer for Windows (x64)"
+          gh release upload "$tag" desktop/src-tauri/target/release/bundle/nsis/*.exe --clobber
