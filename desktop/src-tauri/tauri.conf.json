@@ -68,8 +68,8 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "publisher": "Hemanathan",
-    "copyright": "Adithya-Bot by Hemanathan",
+    "publisher": "SPR Consultech",
+    "copyright": "Adithya-Bot • powered by sprconsultech",
     "category": "DeveloperTool",
     "shortDescription": "Run Adithya-Bot on your own machine",
     "longDescription": "Adithya-Bot Desktop installs the container engine, raises the stack, and keeps it running."

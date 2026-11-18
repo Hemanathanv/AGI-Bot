@@ -124,6 +124,10 @@ VIAddVersionKey "FileDescription" "${PRODUCTNAME}"
 VIAddVersionKey "LegalCopyright" "${COPYRIGHT}"
 VIAddVersionKey "FileVersion" "${VERSION}"
 VIAddVersionKey "ProductVersion" "${VERSION}"
+VIAddVersionKey "CompanyName" "SPR Consultech"
+VIAddVersionKey "LegalTrademarks" "powered by sprconsultech"
+VIAddVersionKey "Comments" "powered by sprconsultech"
+BrandingText "Adithya-Bot • powered by sprconsultech"
 
 # additional plugins
 !addplugindir "${ADDITIONALPLUGINSPATH}"

@@ -18,6 +18,7 @@ export function Lockup({ byCopilotKit = false }: { byCopilotKit?: boolean }) {
     <div className="lockup" aria-hidden="true">
       <div className="orb" />
       <span>Adithya-Bot</span>
+      <span className="lockup-by">powered by sprconsultech</span>
     </div>
   );
 }

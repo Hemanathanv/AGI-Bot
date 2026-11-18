@@ -97,6 +97,7 @@ export function Welcome({
       <div className="lockup">
         <div className="orb" aria-hidden="true" />
         <span>Adithya-Bot</span>
+        <span className="lockup-by">powered by sprconsultech</span>
       </div>
       <h1>Set up Adithya-Bot</h1>
       <fieldset className="picker hosting">
