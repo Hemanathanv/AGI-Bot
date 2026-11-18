@@ -408,7 +408,7 @@ const UPDATE_STEPS = {
   "dependencies-install": "Updating where OpenBot keeps your data",
   "dependencies-wait": "Waiting for where OpenBot keeps your data",
   jobs: "Updating your data",
-  "services-start": "Starting OpenBot's services",
+  "services-start": "Starting Adithya-Bot's services",
 } as const;
 
 export type LocalUpdateStep = {

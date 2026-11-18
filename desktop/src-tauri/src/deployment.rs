@@ -44,12 +44,12 @@ pub struct Installed {
 /// A release asset rather than a branch, and https rather than git, so nothing needs a git client
 /// or credentials to get a deployment.
 pub fn tarball_url(version: &str) -> String {
-    format!("https://github.com/CopilotKit/OpenBot/archive/refs/tags/{version}.tar.gz")
+    format!("https://github.com/Hemanathanv/AGI-Bot/archive/refs/tags/{version}.tar.gz")
 }
 
 /// Where the release publishes its image manifest.
 pub fn images_url(version: &str) -> String {
-    format!("https://github.com/CopilotKit/OpenBot/releases/download/{version}/{IMAGES}")
+    format!("https://github.com/Hemanathanv/AGI-Bot/releases/download/{version}/{IMAGES}")
 }
 
 pub fn images_path(root: &Path) -> PathBuf {
@@ -367,7 +367,7 @@ pub fn fetch_with(root: &Path, version: &str, get: Download) -> Result<(), Strin
 ///
 /// A pinned build lays out the commit its release was cut from, not a tag that could be moved.
 pub fn commit_tarball_url(commit: &str) -> String {
-    format!("https://github.com/CopilotKit/OpenBot/archive/{commit}.tar.gz")
+    format!("https://github.com/Hemanathanv/AGI-Bot/archive/{commit}.tar.gz")
 }
 
 /// Lay out the commit a pinned build was cut from, with the images the build was compiled with.
@@ -556,7 +556,7 @@ pub const DOWNLOADS: &str = "https://downloads.copilotkit.ai";
 /// under the same version and file name. `None` for anything else, a commit's archive included.
 pub fn mirrored(url: &str) -> Option<String> {
     if let Some(tag) = url
-        .strip_prefix("https://github.com/CopilotKit/OpenBot/archive/refs/tags/")
+        .strip_prefix("https://github.com/Hemanathanv/AGI-Bot/archive/refs/tags/")
         .and_then(|rest| rest.strip_suffix(".tar.gz"))
     {
         return (!tag.is_empty() && !tag.contains('/'))
@@ -564,7 +564,7 @@ pub fn mirrored(url: &str) -> Option<String> {
     }
     const COPIES: [(&str, &str); 3] = [
         (
-            "https://github.com/CopilotKit/OpenBot/releases/download/",
+            "https://github.com/Hemanathanv/AGI-Bot/releases/download/",
             "releases/",
         ),
         (
@@ -779,12 +779,12 @@ mod tests {
         // A commit's archive, the release lookup and other repositories stay on GitHub.
         for github in [
             commit_tarball_url("0123456789abcdef"),
-            "https://github.com/CopilotKit/OpenBot/archive/refs/tags/.tar.gz".to_string(),
+            "https://github.com/Hemanathanv/AGI-Bot/archive/refs/tags/.tar.gz".to_string(),
             "https://github.com/someone/OpenBot/archive/refs/tags/v0.3.4.tar.gz".to_string(),
             "https://api.github.com/repos/CopilotKit/OpenBot/releases/latest".to_string(),
             "https://github.com/someone/OpenBot/releases/download/v0.3.4/container-images.json"
                 .to_string(),
-            "https://github.com/CopilotKit/OpenBot/releases/download/".to_string(),
+            "https://github.com/Hemanathanv/AGI-Bot/releases/download/".to_string(),
         ] {
             assert_eq!(mirrored(&github), None, "{github}");
         }
@@ -1367,10 +1367,10 @@ mod tests {
 
         let get = |url: &str| -> Result<Vec<u8>, String> {
             match url {
-                "https://github.com/CopilotKit/OpenBot/archive/refs/tags/v0.0.7.tar.gz" => {
+                "https://github.com/Hemanathanv/AGI-Bot/archive/refs/tags/v0.0.7.tar.gz" => {
                     Ok(tarball.clone())
                 }
-                "https://github.com/CopilotKit/OpenBot/releases/download/v0.0.7/container-images.json" => {
+                "https://github.com/Hemanathanv/AGI-Bot/releases/download/v0.0.7/container-images.json" => {
                     Ok(images.clone())
                 }
                 other => Err(format!("unexpected download {other}")),
@@ -1416,10 +1416,10 @@ mod tests {
         let images = serde_json::to_vec(&manifest(&published)).unwrap();
         let get = |url: &str| -> Result<Vec<u8>, String> {
             match url {
-                "https://github.com/CopilotKit/OpenBot/archive/refs/tags/v0.0.16.tar.gz" => {
+                "https://github.com/Hemanathanv/AGI-Bot/archive/refs/tags/v0.0.16.tar.gz" => {
                     Ok(tarball.clone())
                 }
-                "https://github.com/CopilotKit/OpenBot/releases/download/v0.0.16/container-images.json" => {
+                "https://github.com/Hemanathanv/AGI-Bot/releases/download/v0.0.16/container-images.json" => {
                     Ok(images.clone())
                 }
                 other => Err(format!("unexpected download {other}")),

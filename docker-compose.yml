@@ -79,7 +79,7 @@ services:
     #
     # `missing` rather than `always`: a `sha-` tag names one build and never moves, so an image this
     # machine already has is the right one. OpenBot Desktop sets `missing` too.
-    image: &server-image ${SERVER_IMAGE:-ghcr.io/copilotkit/openbot:${OPENBOT_BACKEND_TAG:-see-backend-images.env}}
+    image: &server-image ${SERVER_IMAGE:-ghcr.io/hemanathanv/agi-bot:${OPENBOT_BACKEND_TAG:-v1.1.0}}
     pull_policy: ${IMAGE_PULL_POLICY:-missing}
     # The server, and nothing else in the image: the executable and its command, from the directory
     # the server reads its migrations from. Naming the entrypoint drops the image's own, and with it
@@ -311,7 +311,7 @@ services:
     # Compose-derived, because the supervisor starts one computer per Bot from this image by name.
     # COMPUTER_IMAGE is still a setting of its own: an OpenBot Desktop app pins it from a release's
     # image list, where it names the same image as SERVER_IMAGE.
-    image: &computer-image ${COMPUTER_IMAGE:-ghcr.io/copilotkit/openbot:${OPENBOT_BACKEND_TAG:-see-backend-images.env}}
+    image: &computer-image ${COMPUTER_IMAGE:-ghcr.io/hemanathanv/agi-bot:${OPENBOT_BACKEND_TAG:-v1.1.0}}
     pull_policy: ${IMAGE_PULL_POLICY:-missing}
     # THE COMPUTER, AND NOTHING ELSE IN THE IMAGE. A container of its own, so what a Bot's shell can
     # read is what this service is given below and not one setting of the server's: no database

@@ -6,9 +6,12 @@ export function Trademark() {
   return null;
 }
 
-export function BrandName({ children }: { children: string }) {
-  if (children === "OpenBot" || children === "OpenBot for Business") {
-    return "Adithya-Bot";
+export function BrandName({ children }: { children?: any }) {
+  if (typeof children === "string") {
+    if (children === "OpenBot" || children === "OpenBot for Business") {
+      return "Adithya-Bot";
+    }
+    return children.replace(/OpenBot/g, "Adithya-Bot");
   }
-  return children;
+  return children ?? "Adithya-Bot";
 }

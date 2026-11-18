@@ -17,13 +17,7 @@ export function Lockup({ byCopilotKit = false }: { byCopilotKit?: boolean }) {
   return (
     <div className="lockup" aria-hidden="true">
       <div className="orb" />
-      <span>
-        OpenBot
-        <sup className="trademark" aria-hidden="true">
-          ™
-        </sup>
-      </span>
-      {byCopilotKit && <span className="lockup-by">by CopilotKit</span>}
+      <span>Adithya-Bot</span>
     </div>
   );
 }

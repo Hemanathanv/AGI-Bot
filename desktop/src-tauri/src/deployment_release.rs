@@ -44,7 +44,7 @@ pub fn distribution_defaults(
 ) -> Distribution {
     let repository = repository
         .filter(|v| !v.is_empty())
-        .unwrap_or("CopilotKit/OpenBot");
+        .unwrap_or("Hemanathanv/AGI-Bot");
     Distribution {
         distribution_id: id.filter(|v| !v.is_empty()).unwrap_or(repository).into(),
         repository: repository.into(),
@@ -103,18 +103,8 @@ pub fn resolve_version(root: &Path) -> Result<String, String> {
     let own = crate::upgrade::app_release();
     resolve_version_with(root, deployment::pinned().as_ref(), &own, || {
         let policy = distribution(root)?;
-        // OpenBot's own releases: the app update feed on downloads.copilotkit.ai names the same
-        // Latest release, and GitHub is asked only when it cannot be read.
-        if policy.repository == "CopilotKit/OpenBot" {
-            match deployment::get_from_mirror(LATEST_FEED).and_then(|body| feed_tag(&body)) {
-                Ok(tag) => return Ok(tag),
-                Err(error) => {
-                    log::warn!("[download] {error}; asking GitHub for the latest release")
-                }
-            }
-        }
         let body = deployment::get(&latest_url(&policy))
-            .map_err(|error| format!("could not find the latest OpenBot release: {error}"))?;
+            .map_err(|error| format!("could not find the latest release: {error}"))?;
         release_tag(&body)
     })
 }

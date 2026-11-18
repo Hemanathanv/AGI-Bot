@@ -1,6 +1,6 @@
 import { IconBuilding, IconCloud, IconDeviceLaptop } from "@tabler/icons-react";
 import { type ReactNode, useState } from "react";
-import { ConnectToAdithya-Bot, useConnectToAdithya-Bot } from "./ConnectToAdithya-Bot";
+import { ConnectToOpenBot as ConnectToAdithyaBot, useConnectToOpenBot as useConnectToAdithyaBot } from "./ConnectToOpenBot";
 import {
   EarlyDownloadsLine,
   earlyDownloadsMeasured,
@@ -90,18 +90,13 @@ export function Welcome({
   /** A failure from setup on this computer, shown inside this card rather than under it. */
   failure?: ReactNode;
 }) {
-  const connecting = useConnectToAdithya-Bot({ ...saved, onThisComputer });
+  const connecting = useConnectToAdithyaBot({ ...saved, onThisComputer });
   const connect = hosting === "connect";
   return (
     <div className="sheet">
       <div className="lockup">
         <div className="orb" aria-hidden="true" />
-        <span>
-          Adithya-Bot
-          <sup className="trademark" aria-hidden="true">
-            ™
-          </sup>
-        </span>
+        <span>Adithya-Bot</span>
       </div>
       <h1>Set up Adithya-Bot</h1>
       <fieldset className="picker hosting">

@@ -453,22 +453,38 @@
    ======================================================== */
 
 /* Suppress CopilotKit watermarks, badges and licensing links */
-[class*="copilotkit"],
-[id*="copilotkit"],
+[data-copilotkit-license-banner],
+.copilotkit-license-banner,
 a[href*="copilotkit.ai"],
-div:has(> div > a[href*="copilotkit.ai"]),
-div:has(> a[href*="copilotkit.ai"]),
-div:has(> span:contains("Powered by CopilotKit")) {
+a[href*="copilotkit"],
+div:has(> a[href*="copilotkit"]),
+div:has(> * > a[href*="copilotkit"]),
+div:has(> * > * > a[href*="copilotkit"]),
+div:has(> a[href*="license"]),
+div:has(> * > a[href*="license"]),
+div[class*="copilotKitLicense"],
+div[class*="license-banner"],
+div[class*="LicenseBanner"] {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
   height: 0 !important;
   width: 0 !important;
+  max-height: 0 !important;
+  max-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
 }
 
 /* Supress trademark superscript */
-sup[data-slot="trademark"] {
+sup[data-slot="trademark"],
+sup.trademark,
+.trademark {
   display: none !important;
   visibility: hidden !important;
 }

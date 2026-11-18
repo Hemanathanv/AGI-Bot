@@ -2347,7 +2347,7 @@ fn try_getting_own_release_ready<R: tauri::Runtime>(
         None => {
             let repository = deployment_release::distribution(&root)
                 .map(|policy| policy.repository)
-                .unwrap_or_else(|_| "CopilotKit/OpenBot".into());
+                .unwrap_or_else(|_| "Hemanathanv/AGI-Bot".into());
             match deployment::get(&update_ready::list_url(&repository, &version))
                 .and_then(|body| update_ready::read_list(&body, &version))
             {
@@ -2445,7 +2445,7 @@ fn try_getting_update_ready<R: tauri::Runtime>(
         None => {
             let repository = deployment_release::distribution(&root)
                 .map(|policy| policy.repository)
-                .unwrap_or_else(|_| "CopilotKit/OpenBot".into());
+                .unwrap_or_else(|_| "Hemanathanv/AGI-Bot".into());
             let read = match test {
                 Some(folder) => update_ready::read_test_list(folder),
                 None => deployment::get(&update_ready::list_url(&repository, &version))

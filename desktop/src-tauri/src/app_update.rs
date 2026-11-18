@@ -847,7 +847,7 @@ mod tests {
                 &feeds
             ),
             Some(url(
-                "https://github.com/CopilotKit/OpenBot/releases/latest/download/latest.json"
+                "https://github.com/Hemanathanv/AGI-Bot/releases/latest/download/latest.json"
             ))
         );
         for failed in [

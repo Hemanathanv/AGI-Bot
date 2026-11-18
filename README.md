@@ -330,7 +330,7 @@ One image carries the app, the API, the browser the Bots drive, and optionally P
 # The published image. Nothing to clone and nothing to build.
 docker run -p 3001:3001 --env-file .env \
   -e EMBEDDED_POSTGRES=on -v openbot-data:/var/lib/postgresql \
-  ghcr.io/copilotkit/openbot:latest
+  ghcr.io/hemanathanv/agi-bot:latest
 ```
 
 Everything is on 3001 here, the app included, rather than the 3010 the clone uses. `latest` is the
