@@ -44,7 +44,7 @@ type Phase = "idle" | "checking" | "waiting" | "opening" | "leaving";
 /** What went wrong, and what the screen offers for it. `null` offers nothing of its own. */
 type Trouble = { problem: Problem; offer: Offer | null };
 
-export type Connecting = ReturnType<typeof useConnectToAdithya-Bot>;
+export type Connecting = ReturnType<typeof useConnectToOpenBot>;
 
 /**
  * Connecting this app to an Adithya-Bot that runs elsewhere: the address, the sign-in in the person's
@@ -56,7 +56,7 @@ export type Connecting = ReturnType<typeof useConnectToAdithya-Bot>;
  * browser, waits for the sign-in and then shows that Adithya-Bot in this window. Nothing is installed
  * or started on this computer.
  */
-export function useConnectToAdithya-Bot({
+export function useConnectToOpenBot({
   address: remembered = "",
   problem: found = null,
   reopen,
@@ -192,7 +192,7 @@ export function useConnectToAdithya-Bot({
  * The first screen's lower half when Adithya-Bot runs elsewhere: one field for its address, what
  * happens next, and Connect. While the browser is waited on, Cancel is the only control.
  */
-export function ConnectToAdithya-Bot({ connecting }: { connecting: Connecting }) {
+export function ConnectToOpenBot({ connecting }: { connecting: Connecting }) {
   const id = useId();
   const { address, phase, trouble, busy } = connecting;
   const underField = trouble?.offer === "field";
