@@ -26,7 +26,8 @@ jobs:
 
       - name: Tag and Push to GHCR
         run: |
-          docker tag sprdocker26/agi-bot:v1.1.0 ghcr.io/${{ github.repository_owner }}/agi-bot:v1.1.0
-          docker tag sprdocker26/agi-bot:v1.1.0 ghcr.io/${{ github.repository_owner }}/agi-bot:latest
-          docker push ghcr.io/${{ github.repository_owner }}/agi-bot:v1.1.0
-          docker push ghcr.io/${{ github.repository_owner }}/agi-bot:latest
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          docker tag sprdocker26/agi-bot:v1.1.0 "ghcr.io/${OWNER}/agi-bot:v1.1.0"
+          docker tag sprdocker26/agi-bot:v1.1.0 "ghcr.io/${OWNER}/agi-bot:latest"
+          docker push "ghcr.io/${OWNER}/agi-bot:v1.1.0"
+          docker push "ghcr.io/${OWNER}/agi-bot:latest"
