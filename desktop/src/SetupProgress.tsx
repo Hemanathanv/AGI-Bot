@@ -266,7 +266,7 @@ export function plainInstallSteps(
   /** When this install began: its running row's time so far counts from here. */
   since?: number | null,
   /** The rest of Adithya-Bot's download while it runs, or null. */
-  restOfAdithya-Bot?: Downloads | null,
+  restOfAdithyaBot?: Downloads | null,
 ): Progress[] {
   const preparing = steps.filter((step) => PREPARING.has(step.step));
   const rest = steps.filter((step) => !PREPARING.has(step.step));
@@ -314,14 +314,14 @@ export function plainInstallSteps(
       startedAt: since ?? undefined,
     });
   }
-  if (restOfAdithya-Bot && !rows.some((row) => row.running || !row.ok))
+  if (restOfAdithya - Bot && !rows.some((row) => row.running || !row.ok))
     rows.push({
       step: "Downloading the rest of Adithya-Bot",
       ok: true,
       running: true,
       // The row says the time left from the download's own speed.
       detail: "",
-      downloads: restOfAdithya-Bot,
+      downloads: restOfAdithya - Bot,
       position: { at: 3, of: INSTALL_PARTS },
     });
   return rows;
@@ -529,9 +529,8 @@ export function downloadSummary(downloads: Downloads): string {
   const { bytes, size, done, total } = downloads;
   if (unpacking(downloads)) {
     const remaining = (total ?? 0) - (done ?? 0);
-    return `${formatDownloadBytes(bytes)} downloaded · Finishing ${
-      remaining === 1 ? "the last part" : `the last ${remaining} parts`
-    }`;
+    return `${formatDownloadBytes(bytes)} downloaded · Finishing ${remaining === 1 ? "the last part" : `the last ${remaining} parts`
+      }`;
   }
   const parts: string[] = [];
   if (size != null) {
@@ -726,21 +725,21 @@ export function installingBehind({
       backEnd.at === "setup" && (backEnd.trail?.length ?? 0) > 0;
     const where = following
       ? journey([
-          {
-            plan: SETUP,
-            state: "now",
-            at: position(
-              SETUP,
-              backEnd.trail ?? [],
-              Math.max(
-                0,
-                (Date.now() -
-                  (backEnd.trailSince ?? backEnd.since ?? Date.now())) /
-                  1000,
-              ),
+        {
+          plan: SETUP,
+          state: "now",
+          at: position(
+            SETUP,
+            backEnd.trail ?? [],
+            Math.max(
+              0,
+              (Date.now() -
+                (backEnd.trailSince ?? backEnd.since ?? Date.now())) /
+              1000,
             ),
-          },
-        ])
+          ),
+        },
+      ])
       : null;
     return row(
       3,
@@ -749,7 +748,7 @@ export function installingBehind({
         : where
           ? `${where.said}. ${leftSaid(where.left)}.`
           : backEnd.detail ||
-            "Setting up Adithya-Bot on this computer. This takes a few minutes the first time.",
+          "Setting up Adithya-Bot on this computer. This takes a few minutes the first time.",
       {
         downloads: backEnd.download ?? undefined,
         startedAt: counting,
@@ -762,7 +761,7 @@ export function installingBehind({
       backEnd.download
         ? "Downloading an update."
         : backEnd.detail ||
-            "Getting Adithya-Bot ready to start. This can take a few minutes.",
+        "Getting Adithya-Bot ready to start. This can take a few minutes.",
       {
         downloads: backEnd.download ?? undefined,
         startedAt: counting,
