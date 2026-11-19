@@ -282,11 +282,11 @@ export function packCli(
     let indexJs = readFileSync(indexJsPath, "utf8");
     indexJs = indexJs.replaceAll(
       'parsed.data.OperatingSystem === "Docker Desktop"',
-      '/^Docker Desktop/i.test(parsed.data.OperatingSystem)',
+      "/^Docker Desktop/i.test(parsed.data.OperatingSystem)",
     );
     indexJs = indexJs.replaceAll(
       'os14 === "Docker Desktop"',
-      '/^Docker Desktop/i.test(os14)',
+      "/^Docker Desktop/i.test(os14)",
     );
     indexJs = indexJs.replace(
       'const supported = engine.kind === "docker-desktop" ? parsed.data.OperatingSystem === "Docker Desktop" && /^Docker Desktop(?: |$)/.test(name) :',

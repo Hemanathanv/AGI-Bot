@@ -9,7 +9,11 @@ export const OpenBotLogo = forwardRef<HTMLSpanElement, IconProps>(
       className={`inline-flex items-center justify-center shrink-0 ${className || ""}`}
       {...props}
     >
-      <AdithyaRobotFace seed="adithyabot-master-logo" name="Adithya-Bot" size={Number(size) || 24} />
+      <AdithyaRobotFace
+        seed="adithyabot-master-logo"
+        name="Adithya-Bot"
+        size={Number(size) || 24}
+      />
     </span>
   ),
 ) as unknown as Icon;

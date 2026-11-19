@@ -145,11 +145,10 @@ jobs:
       # another publisher's registry.
       - id: registry
         name: Resolve this distribution's registry namespace
-        env:
-          REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
-          repository="ghcr.io/$(tr '[:upper:]' '[:lower:]' <<< "$REPOSITORY")"
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          repository="ghcr.io/$owner/adithya-bot"
           echo "repository=$repository" >> "$GITHUB_OUTPUT"
 
   # The OpenBot image and the supervisor's, by the digest their tag names now, so a deploy or a
@@ -185,7 +184,7 @@ jobs:
           for pair in openbot:agi-bot openbot-supervisor:agi-bot-supervisor; do
             source="${pair%%:*}"
             destination="${pair#*:}"
-            skopeo copy --all --preserve-digests \
+            skopeo copy --all \
               --dest-creds "$GITHUB_REPOSITORY_OWNER:$GH_TOKEN" \
               "docker://ghcr.io/copilotkit/$source:$upstream" \
               "docker://ghcr.io/$owner/$destination:$TAG"

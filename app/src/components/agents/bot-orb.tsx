@@ -14,12 +14,5 @@ export function BotOrb({
   size?: number;
   state?: "idle" | "working" | "waiting";
 }) {
-  return (
-    <AdithyaRobotFace
-      name={name}
-      seed={seed}
-      size={size}
-      state={state}
-    />
-  );
+  return <AdithyaRobotFace name={name} seed={seed} size={size} state={state} />;
 }
