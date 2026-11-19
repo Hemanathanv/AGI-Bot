@@ -463,7 +463,7 @@ function statusLine(lines: string[]) {
  * Windows F, a clean install of 1.0.2: the Installing page's status line read "Create folder:
  * C:\Users\Administrator\AppData\Local\OpenBot\cli-bundle\..." and "Extract: ..." for each of
  * OpenBot's files, the person's own folders and nothing they could act on. A person reads plain
- * lines only: "Copying OpenBot's files." while the files go in, and the WebView2 Runtime's own
+ * lines only: "Copying Adithya-Bot's files." while the files go in, and the WebView2 Runtime's own
  * lines while it comes. NSIS's lines still go to the details list
  * (https://nsis.sourceforge.io/Docs/Chapter4.html#setdetailsprint). On the first live run of that
  * fix, FileFunc's GetSize still said "Size:190 Kb  Files:1  Folders:" and put the status line back,
@@ -473,7 +473,7 @@ test("the Installing page's status line says plain lines, never a folder or a fi
   const install = code(between(template(), "Section Install", "SectionEnd"));
   const copying = statusLine(install);
   expect(copying.paths).toEqual([]);
-  expect(copying.said).toEqual([`DetailPrint "Copying OpenBot's files."`]);
+  expect(copying.said).toEqual([`DetailPrint "Copying Adithya-Bot's files."`]);
   // Up before the first file is copied, and the status line is back for what comes after.
   expect(install.indexOf(copying.said[0])).toBeLessThan(
     install.findIndex((line) => line.startsWith("File ")),

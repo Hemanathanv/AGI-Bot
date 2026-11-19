@@ -314,14 +314,14 @@ export function plainInstallSteps(
       startedAt: since ?? undefined,
     });
   }
-  if (restOfAdithya - Bot && !rows.some((row) => row.running || !row.ok))
+  if (restOfAdithyaBot && !rows.some((row) => row.running || !row.ok))
     rows.push({
       step: "Downloading the rest of Adithya-Bot",
       ok: true,
       running: true,
       // The row says the time left from the download's own speed.
       detail: "",
-      downloads: restOfAdithya - Bot,
+      downloads: restOfAdithyaBot,
       position: { at: 3, of: INSTALL_PARTS },
     });
   return rows;

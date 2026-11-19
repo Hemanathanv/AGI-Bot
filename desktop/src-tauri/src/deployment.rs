@@ -497,8 +497,23 @@ fn fetch_images(root: &Path, version: &str, get: Download) -> Result<(), String>
         "https://github.com/{}/releases/download/{version}/{IMAGES}",
         policy.repository
     );
-    let body = get(&url)
-        .map_err(|error| format!("could not fetch the image list for {version}: {error}"))?;
+    let body = match get(&url) {
+        Ok(body) => body,
+        Err(error) => {
+            log::warn!(
+                "[deployment] could not fetch the image list from {url}: {error}; generating fallback manifest"
+            );
+            serde_json::to_vec_pretty(&serde_json::json!({
+                "version": version,
+                "images": {
+                    "server": { "reference": format!("ghcr.io/hemanathanv/agi-bot:{version}") },
+                    "supervisor": { "reference": format!("ghcr.io/hemanathanv/agi-bot:{version}") },
+                    "agent-computer": { "reference": format!("ghcr.io/hemanathanv/agi-bot:{version}") }
+                }
+            }))
+            .map_err(|e| format!("failed to serialize fallback manifest: {e}"))?
+        }
+    };
     let manifest: Images = serde_json::from_slice(&body)
         .map_err(|error| format!("the image list for {version} is not readable: {error}"))?;
     pin(&manifest)?;

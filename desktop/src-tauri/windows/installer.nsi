@@ -28,7 +28,7 @@
 ; And no ExecWait puts its command on the page: each one is said to the details list only, while
 ; the plain line before it stays on the status line (installingWebview2 in installer-english.nsh).
 ; The Install section's own lines, each folder and file it makes with its path, go to the details
-; list too, under one plain line, "Copying OpenBot's files."
+; list too, under one plain line, "Copying Adithya-Bot's files."
 ; <<< OpenBot
 Unicode true
 ManifestDPIAware true
@@ -781,7 +781,7 @@ Section Install
   !insertmacro CheckIfAppIsRunning "${MAINBINARYNAME}.exe" "${PRODUCTNAME}"
 
   ; >>> OpenBot
-  DetailPrint "Copying OpenBot's files."
+  DetailPrint "Copying Adithya-Bot's files."
   SetDetailsPrint listonly
   ; <<< OpenBot
   ; Copy main executable
