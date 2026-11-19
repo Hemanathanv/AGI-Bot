@@ -40,7 +40,7 @@ function SetupHelp() {
   // Whitelabel builds can choose their own support page. Never prefill it with error data.
   const url =
     import.meta.env.VITE_OPENBOT_SUPPORT_URL?.trim() ||
-    "https://github.com/CopilotKit/OpenBot/issues/new/choose";
+    "https://github.com/Hemanathanv/AGI-Bot/issues/new/choose";
   return (
     <ExternalLink className="setup-help" href={url}>
       Get setup help
@@ -95,7 +95,7 @@ export function TroubleshootingLogs({
     <div className="troubleshooting">
       <p>
         Paste these logs into the AI assistant you use, such as Claude or
-        ChatGPT, and ask what went wrong. OpenBot takes out keys, passwords and
+        ChatGPT, and ask what went wrong. Adithya-Bot takes out keys, passwords and
         your email address first.
       </p>
       <div className="row">

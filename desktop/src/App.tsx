@@ -488,7 +488,8 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
   /*
    * Every notice about the last quit or stop is about that run: what stopped it (`last_failure` at
    * launch, such as "OpenBot had trouble shutting down last time.") and the services it left
-   * running ("When OpenBot last quit, some of its services didn't stop."). Once Start runs, they
+   * running ("When Adithya-Bot last quit, some 
+   * of its services didn't stop."). Once Start runs, they
    * go: a Start that then stops says why in its own row. Kept, they read as the reason this run
    * stopped, through Start and every Retry. Stop still asks those services to stop, and says so
    * again if they don't.
@@ -1349,7 +1350,7 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
                 >
                   {preparation?.status === "failed"
                     ? "Retry installation"
-                    : "Install OpenBot"}
+                    : "Install Adithya-Bot"}
                 </button>
               )}
             </div>
@@ -1391,7 +1392,7 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
               <BehindSlot>
                 <BehindRow
                   row={behind({
-                    done: "OpenBot starts as soon as you connect your AI.",
+                    done: "Adithya-Bot starts as soon as you connect your AI.",
                   })}
                 />
                 <LocalStatus sequence={local} download={false} />

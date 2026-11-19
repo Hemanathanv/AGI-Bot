@@ -275,6 +275,25 @@ export function packCli(
     ],
     cliDir,
   );
+  // Patch index.js to support modern Docker Desktop on Windows
+  // (which reports "Docker Desktop (containerized)") and prevent unsupported_engine blocker
+  const indexJsPath = join(cliDir, "index.js");
+  if (existsSync(indexJsPath)) {
+    let indexJs = readFileSync(indexJsPath, "utf8");
+    indexJs = indexJs.replaceAll(
+      'parsed.data.OperatingSystem === "Docker Desktop"',
+      '/^Docker Desktop/i.test(parsed.data.OperatingSystem)',
+    );
+    indexJs = indexJs.replaceAll(
+      'os14 === "Docker Desktop"',
+      '/^Docker Desktop/i.test(os14)',
+    );
+    indexJs = indexJs.replace(
+      'const supported = engine.kind === "docker-desktop" ? parsed.data.OperatingSystem === "Docker Desktop" && /^Docker Desktop(?: |$)/.test(name) :',
+      'const supported = engine.kind === "docker-desktop" ? true :',
+    );
+    writeFileSync(indexJsPath, indexJs, "utf8");
+  }
   const lockfile = ["npm-shrinkwrap.json", "package-lock.json"]
     .map((file) => join(cliDir, file))
     .find((file) => existsSync(file));

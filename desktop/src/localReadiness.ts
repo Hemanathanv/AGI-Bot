@@ -30,9 +30,9 @@ export function onInstalledReleaseSaid({
 }: NonNullable<ReturnType<typeof onInstalledRelease>>): string {
   // The releases are in the log (`log_update_due`): a person reads what happened and what's next.
   const unfinished = update.stoppedDownloading
-    ? "The OpenBot update didn't finish downloading"
-    : "The OpenBot update didn't finish";
-  return `${unfinished}, so OpenBot is running the version it had. It tries again the next time it starts.`;
+    ? "The Adithya-Bot update didn't finish downloading"
+    : "The Adithya-Bot update didn't finish";
+  return `${unfinished}, so Adithya-Bot is running the version it had. It tries again the next time it starts.`;
 }
 
 export type ReadinessState = "ready" | "blocked" | "unknown";
@@ -81,15 +81,15 @@ function blocked(said: string, action?: ReadinessAction): ReadinessRow {
  * named only where the person has to act in it: Docker Desktop's settings, a Podman command.
  */
 const unavailableHere =
-  "This version of OpenBot can't run on this computer. Check for an update to OpenBot.";
+  "This version of Adithya-Bot can't run on this computer. Check for an update to Adithya-Bot.";
 const contract =
-  "OpenBot got an answer it couldn't read. Retry. If it happens again, copy the logs below.";
+  "Adithya-Bot got an answer it couldn't read. Retry. If it happens again, copy the logs below.";
 const couldNotStart = blocked(
-  "OpenBot couldn't start.",
+  "Adithya-Bot couldn't start.",
   "restart-intelligence",
 );
 const busy = blocked(
-  "OpenBot is still busy with another step. Wait a moment, then Retry.",
+  "Adithya-Bot is still busy with another step. Wait a moment, then Retry.",
   "retry",
 );
 // The three ways a back end command ends with no answer OpenBot can act on, each said apart, so
@@ -99,11 +99,11 @@ const failedPartway = blocked(
   "restart-intelligence",
 );
 const couldNotRun = blocked(
-  "OpenBot couldn't run part of its own software. Retry.",
+  "Adithya-Bot couldn't run part of its own software. Retry.",
   "restart-intelligence",
 );
 const quitUnexplained = blocked(
-  "Part of OpenBot stopped without saying why. Retry. If it stops again, copy the logs below.",
+  "Part of Adithya-Bot stopped without saying why. Retry. If it stops again, copy the logs below.",
   "restart-intelligence",
 );
 
@@ -152,13 +152,13 @@ function shortfallSaid(
   );
   // Space was freed, and k3s still says the disk is low for a few minutes after.
   if (shortfall.recovering && short.length === 0) {
-    return `OpenBot is recovering from low disk space. Wait a few minutes, then ${then}.`;
+    return `Adithya-Bot is recovering from low disk space. Wait a few minutes, then ${then}.`;
   }
   if (short.length === 0) {
     const fix = shortfall.podman
       ? "Stop your Podman machine, raise them with podman machine set, start it again"
       : "Raise them in Docker Desktop > Settings > Resources";
-    return `${shortfall.podman ? "This computer doesn't give OpenBot" : "Docker Desktop doesn't give OpenBot"} enough CPUs, memory or disk space. ${fix}, then ${then}.`;
+    return `${shortfall.podman ? "This computer doesn't give Adithya-Bot" : "Docker Desktop doesn't give Adithya-Bot"} enough CPUs, memory or disk space. ${fix}, then ${then}.`;
   }
   // The drive under OpenBot's machine ran short, on Windows: said as the person sees it in File
   // Explorer, and as the first screen says it. "OpenBot has 13.2 GB of free disk" read badly.
@@ -170,7 +170,7 @@ function shortfallSaid(
     shortfall.diskGb &&
     !shortfall.nearlyFull
   ) {
-    return `This computer has ${shortfall.diskGb} GB of free space on drive ${shortfall.drive}, and OpenBot needs ${needed.disk}. Free up some space, then ${then}.`;
+    return `This computer has ${shortfall.diskGb} GB of free space on drive ${shortfall.drive}, and Adithya-Bot needs ${needed.disk}. Free up some space, then ${then}.`;
   }
   const fix = shortfall.podman
     ? podmanFix(short, shortfall)
@@ -184,7 +184,7 @@ function shortfallSaid(
       shortfall.diskGb && Number(shortfall.diskGb) < 40
         ? ` ${needsWho} ${needed.disk}.`
         : "";
-    return `OpenBot is nearly out of disk space.${free}${needs40} ${fix}, then ${then}.`;
+    return `Adithya-Bot is nearly out of disk space.${free}${needs40} ${fix}, then ${then}.`;
   }
   // The CLI's own numbers, when its error gave one for every resource that is short.
   const measured: Record<Resource, string | undefined> = {
@@ -194,7 +194,7 @@ function shortfallSaid(
     disk: shortfall.diskGb && `${shortfall.diskGb} GB of free disk space`,
   };
   const has = short.map((resource) => measured[resource]);
-  // After "OpenBot is nearly out of disk space.", OpenBot's own machine is "it".
+  // After "Adithya-Bot is nearly out of disk space.", OpenBot's own machine is "it".
   const who = shortfall.podman && shortfall.nearlyFull ? "It" : engine;
   const said = has.every((said) => said !== undefined)
     ? `${who} has ${listed(has as string[])}. ${needsWho} ${
@@ -204,7 +204,7 @@ function shortfallSaid(
       }.`
     : `${engine} doesn't have enough ${listed(short.map((resource) => resourceName[resource]))}. ${needsWho} ${listed(short.map((resource) => needs[resource]))}.`;
   const full = shortfall.nearlyFull
-    ? "OpenBot is nearly out of disk space. "
+    ? "Adithya-Bot is nearly out of disk space. "
     : "";
   return `${full}${said} ${fix}, then ${then}.`;
 }
@@ -224,7 +224,7 @@ function podmanFix(short: Resource[], shortfall: Shortfall): string {
   const freed =
     shortfall.wsl &&
     short.includes("disk") &&
-    `free up space on ${shortfall.drive ? `drive ${shortfall.drive}` : "the drive OpenBot is installed on"}`;
+    `free up space on ${shortfall.drive ? `drive ${shortfall.drive}` : "the drive Adithya-Bot is installed on"}`;
   if (set && freed) return `${set}, and ${freed}`;
   if (freed) return freed.charAt(0).toUpperCase() + freed.slice(1);
   return set || "";
@@ -280,17 +280,17 @@ export function podmanTooSmallSaid(
     const short = (["cpu", "memory", "disk"] as const).filter(
       (resource) => shortfall[resource],
     );
-    return `Your Podman machine doesn't have enough ${listed(short.map((resource) => resourceName[resource]))} for OpenBot.`;
+    return `Your Podman machine doesn't have enough ${listed(short.map((resource) => resourceName[resource]))} for Adithya-Bot.`;
   }
   if (shortfall.cpu && shortfall.memory) {
     return shortfall.memoryGb
-      ? `${has} ${plan.cpus} CPUs and ${shortfall.memoryGb} GB of free memory. OpenBot needs 4 CPUs and 4 GB of free memory.`
-      : `${has} ${plan.cpus} CPUs and ${gb(plan.memoryMib)} GB of memory. OpenBot needs 4 CPUs and 4 GB of free memory.`;
+      ? `${has} ${plan.cpus} CPUs and ${shortfall.memoryGb} GB of free memory. Adithya-Bot needs 4 CPUs and 4 GB of free memory.`
+      : `${has} ${plan.cpus} CPUs and ${gb(plan.memoryMib)} GB of memory. Adithya-Bot needs 4 CPUs and 4 GB of free memory.`;
   }
-  if (shortfall.cpu) return `${has} ${plan.cpus} CPUs. OpenBot needs 4.`;
+  if (shortfall.cpu) return `${has} ${plan.cpus} CPUs. Adithya-Bot needs 4.`;
   return shortfall.memoryGb
-    ? `${has} ${gb(plan.memoryMib)} GB of memory, and ${shortfall.memoryGb} GB of it is free. OpenBot needs 4 GB free.`
-    : `${has} ${gb(plan.memoryMib)} GB of memory. OpenBot needs 4 GB free.`;
+    ? `${has} ${gb(plan.memoryMib)} GB of memory, and ${shortfall.memoryGb} GB of it is free. Adithya-Bot needs 4 GB free.`
+    : `${has} ${gb(plan.memoryMib)} GB of memory. Adithya-Bot needs 4 GB free.`;
 }
 
 /** What OpenBot gives the machine, in words: "6 CPUs and 8 GB of memory". */
@@ -334,7 +334,7 @@ export function engineTooSmallSaid(shortfall: Shortfall): string {
 
 // Compiler-enforced: a new upstream reason or failure breaks the build here.
 const reasonRows: Record<LocalReason, ReadinessRow> = {
-  "authentication-required": blocked("Sign in to OpenBot.", "sign-in"),
+  "authentication-required": blocked("Sign in to Adithya-Bot.", "sign-in"),
   // Acceptance is an explicit step of its own; retrying start cannot satisfy it.
   "eula-acceptance-required": blocked(
     "The license agreement hasn't been accepted yet.",
@@ -351,27 +351,27 @@ const reasonRows: Record<LocalReason, ReadinessRow> = {
   "update-recovery-required": blocked(unavailableHere),
   // The runtime row carries the Docker detail. Here Intelligence is simply blocked behind it.
   "unsupported-engine": blocked(
-    "OpenBot can't run on this computer as it's set up.",
+    "Adithya-Bot can't run on this computer as it's set up.",
   ),
   // The CLI could not reach Docker's API: stopped, or running and unreachable, which it cannot tell
   // apart. Retry starts it, or stops and starts one that runs and does not answer.
   "docker-unavailable": blocked(
-    "OpenBot can't reach the software it runs on. Retry to start it again.",
+    "Adithya-Bot can't reach the software it runs on. Retry to start it again.",
     "retry",
   ),
   "port-unavailable": blocked(
-    "Another app is using a network port OpenBot needs. Quit that app, then Retry.",
+    "Another app is using a network port Adithya-Bot needs. Quit that app, then Retry.",
     "retry",
   ),
   "local-command-busy": busy,
   "local-command-failed": failedPartway,
   // OpenBot always approves the connection it asks for, so this is the CLI asking for more.
   "confirmation-required": blocked(
-    "Setup stopped to ask something OpenBot can't answer. Copy the logs below and ask for help.",
+    "Setup stopped to ask something Adithya-Bot can't answer. Copy the logs below and ask for help.",
   ),
   // Reasons only `local login` gives; a status that gave one is still blocked, never ready.
   "dashboard-unavailable": blocked(
-    "OpenBot isn't answering yet. Wait a moment, then Retry.",
+    "Adithya-Bot isn't answering yet. Wait a moment, then Retry.",
     "retry",
   ),
   "browser-open-failed": blocked("Your browser did not open.", "retry"),
@@ -388,7 +388,7 @@ const reasonRows: Record<LocalReason, ReadinessRow> = {
   // Box I: OpenBot's machine was made again, and the backend and its data went with the old one.
   // Honest about what is gone, and the one way on.
   "stack-lost": blocked(
-    "OpenBot's saved data on this computer is gone, with your Bots and conversations. Start fresh to set OpenBot up again. Your sign-in and AI connection stay.",
+    "Adithya-Bot's saved data on this computer is gone, with your Bots and conversations. Start fresh to set Adithya-Bot up again. Your sign-in and AI connection stay.",
     "start-fresh",
   ),
   unrecognized: couldNotStart,
@@ -400,7 +400,7 @@ const licenceRows: Record<
   ReadinessRow
 > = {
   expired: blocked("The evaluation licence has expired."),
-  missing: blocked("OpenBot has no evaluation licence on this computer."),
+  missing: blocked("Adithya-Bot has no evaluation licence on this computer."),
   invalid: blocked("The evaluation licence is not valid."),
   "organization-mismatch": blocked(
     "The licence belongs to a different organization.",
@@ -409,10 +409,10 @@ const licenceRows: Record<
 
 const failureRows: Record<LocalFailure, ReadinessRow> = {
   unavailable: blocked(
-    "This version of OpenBot can't finish setting up on this computer. Check for an update to OpenBot.",
+    "This version of Adithya-Bot can't finish setting up on this computer. Check for an update to Adithya-Bot.",
   ),
   unverified: blocked(
-    "Part of OpenBot didn't pass its download check. Repair the installation to download it again.",
+    "Part of Adithya-Bot didn't pass its download check. Repair the installation to download it again.",
     "repair",
   ),
   // Cancelled is the person's own call stopping, not another command holding the stack.
@@ -422,7 +422,7 @@ const failureRows: Record<LocalFailure, ReadinessRow> = {
   // the images it fetched are still there for the retry. Seen at exactly 30 minutes on a Windows VM
   // that was installing OpenBot's packages at the same time.
   timeout: blocked(
-    "OpenBot took too long to set up, so it stopped waiting. What it already downloaded is kept, so Retry picks up from there.",
+    "Adithya-Bot took too long to set up, so it stopped waiting. What it already downloaded is kept, so Retry picks up from there.",
     "restart-intelligence",
   ),
   "unexpected-exit": quitUnexplained,
@@ -443,7 +443,7 @@ const failureRows: Record<LocalFailure, ReadinessRow> = {
   // the person's call. OpenBot stays in the storage its database is in, and Intelligence runs on
   // the machine's rootful engine.
   "rootless-podman": blocked(
-    "OpenBot can't run on your Podman machine as it's set up. Stop your Podman machine, run podman machine set --rootful, start it again, then Retry.",
+    "Adithya-Bot can't run on your Podman machine as it's set up. Stop your Podman machine, run podman machine set --rootful, start it again, then Retry.",
     "retry",
   ),
   // No new bytes for three minutes. What arrived is kept, and the next download continues from it.
@@ -460,7 +460,7 @@ function intelligenceRow(
   if (intelligence === null) {
     return {
       state: "unknown",
-      said: "OpenBot hasn't been checked yet.",
+      said: "Adithya-Bot hasn't been checked yet.",
     };
   }
   if (typeof intelligence === "string") return failureRows[intelligence];
@@ -476,8 +476,8 @@ function intelligenceRow(
     return {
       state: "ready",
       said: licenceExpiresSoon(intelligence, now)
-        ? "OpenBot is ready. Its evaluation licence expires within 5 days."
-        : "OpenBot is ready.",
+        ? "Adithya-Bot is ready. Its evaluation licence expires within 5 days."
+        : "Adithya-Bot is ready.",
     };
   }
   if (intelligence.reason === "resources-short" && intelligence.shortfall) {
@@ -488,10 +488,10 @@ function intelligenceRow(
   const licence = intelligence.licence;
   if (licence !== "valid" && licence !== "unknown") return licenceRows[licence];
   if (intelligence.readiness === "starting") {
-    return { state: "unknown", said: "OpenBot is starting." };
+    return { state: "unknown", said: "Adithya-Bot is starting." };
   }
   if (intelligence.readiness === "stopped") {
-    return blocked("OpenBot's services are stopped.", "start-intelligence");
+    return blocked("Adithya-Bot's services are stopped.", "start-intelligence");
   }
   if (intelligence.readiness === "degraded") {
     // OpenBot's check of a back end that runs but does not answer: a full disk, or one recovering.
@@ -502,13 +502,13 @@ function intelligenceRow(
       );
     }
     return blocked(
-      "OpenBot is running but not working properly. Retry to start it again.",
+      "Adithya-Bot is running but not working properly. Retry to start it again.",
       "restart-intelligence",
     );
   }
   return {
     state: "unknown",
-    said: "OpenBot started, and hasn't said yet whether it's ready.",
+    said: "Adithya-Bot started, and hasn't said yet whether it's ready.",
   };
 }
 
@@ -521,10 +521,10 @@ function runtimeRow(
   intelligence: ReadinessInput["intelligence"],
 ): ReadinessRow {
   if (runtime === "running") {
-    return { state: "ready", said: "The software OpenBot runs on is running." };
+    return { state: "ready", said: "The software Adithya-Bot runs on is running." };
   }
   const notRunning = blocked(
-    "The software OpenBot runs on isn't running.",
+    "The software Adithya-Bot runs on isn't running.",
     "retry",
   );
   if (runtime === "not-running") return notRunning;
@@ -533,14 +533,14 @@ function runtimeRow(
       ? intelligence.reason
       : null;
   if (reason === "docker-unavailable") {
-    return blocked("OpenBot can't reach the software it runs on.", "retry");
+    return blocked("Adithya-Bot can't reach the software it runs on.", "retry");
   }
   if (reason === "unsupported-engine") {
-    return blocked("OpenBot can't run on this computer as it's set up.");
+    return blocked("Adithya-Bot can't run on this computer as it's set up.");
   }
   return {
     state: "unknown",
-    said: "The software OpenBot runs on hasn't been checked yet.",
+    said: "The software Adithya-Bot runs on hasn't been checked yet.",
   };
 }
 
@@ -550,15 +550,15 @@ export function localReadiness(input: ReadinessInput): Readiness {
     intelligence: intelligenceRow(input.intelligence, input.now ?? Date.now()),
     openBot:
       input.openBot === "connected"
-        ? { state: "ready", said: "OpenBot is connected to its services." }
+        ? { state: "ready", said: "Adithya-Bot is connected to its services." }
         : input.openBot === "not-connected"
           ? blocked(
-              "OpenBot isn't connected to its services. Restart OpenBot.",
+              "Adithya-Bot isn't connected to its services. Restart Adithya-Bot.",
               "restart-openbot",
             )
           : {
               state: "unknown",
-              said: "OpenBot's connection has not been checked.",
+              said: "Adithya-Bot's connection has not been checked.",
             },
     provider:
       input.provider === "validated"

@@ -90,21 +90,21 @@ const DOWNLOAD_EVERY_MS = 1_000;
 export const ROOM_EVERY_MS = 10_000;
 
 const unreadable: Problem = {
-  said: "OpenBot got an answer it couldn't read. Retry. If it happens again, copy the logs below.",
+  said: "Adithya-Bot got an answer it couldn't read. Retry. If it happens again, copy the logs below.",
 };
 
 type Phase = "setup" | "connect" | "wait" | "start";
 
 /*
  * In the person's words: the back end, its releases and the CLI are the log's business. Every row
- * says what OpenBot is doing for them, and the running one how far along it is ("Step 3 of 4").
+ * says what Adithya-Bot is doing for them, and the running one how far along it is ("Step 3 of 4").
  */
 const PHASES: [Phase, string][] = [
-  ["setup", "Setting up OpenBot"],
-  ["connect", "Connecting OpenBot"],
-  ["wait", "Getting OpenBot ready"],
-  // Not "Starting OpenBot": that is the screen's own heading.
-  ["start", "Opening OpenBot"],
+  ["setup", "Setting up Adithya-Bot"],
+  ["connect", "Connecting Adithya-Bot"],
+  ["wait", "Getting Adithya-Bot ready"],
+  // Not "Starting Adithya-Bot": that is the screen's own heading.
+  ["start", "Opening Adithya-Bot"],
 ];
 
 /** The readiness sentence for one CLI answer or failure category. */
@@ -120,7 +120,7 @@ function said(intelligence: LocalReport | LocalFailure): string {
 function connectionSaid(answered: LocalConnection): string {
   // A conflict has no reason of its own, so it is said in this window's words.
   if (answered.conflicted) {
-    return "Settings OpenBot saved were changed since, so it didn't connect. Retry, or repair the installation.";
+    return "Settings Adithya-Bot saved were changed since, so it didn't connect. Retry, or repair the installation.";
   }
   return said({
     outcome: answered.outcome,
@@ -223,18 +223,18 @@ const idle: State = {
  * by the part, as the Status window and Quit name it: OpenBot's own update has a row of its own, and
  * on Windows K the two read as one, "Updating OpenBot · Failed" over a Start still updating OpenBot.
  */
-const UPDATING = "Updating OpenBot's services";
+const UPDATING = "Updating Adithya-Bot's services";
 
 /**
  * The back end's row while it updates. How long it takes and what it is doing now are the
  * journey's (`StartJourney`): the row says only what this part is, and that nothing is lost.
  */
 export const UPDATING_SAID =
-  "Updating OpenBot. Your Bots and data stay as they are.";
+  "Updating Adithya-Bot. Your Bots and data stay as they are.";
 
-/** The start's row while Start updates OpenBot itself (`upgrade::now_said`). */
+/** The start's row while Start updates Adithya-Bot itself (`upgrade::now_said`). */
 export const RELEASE_SAID =
-  "Updating OpenBot. Your Bots, sign-ins and data stay as they are.";
+  "Updating Adithya-Bot. Your Bots, sign-ins and data stay as they are.";
 
 /**
  * An update that failed, and where it stopped once the CLI's record says (`failedStep`), in plain
@@ -245,7 +245,7 @@ export const RELEASE_SAID =
  * `runsWhatItHad` false when the update left the back end not working (paused services): then it
  * does not run the version it had, and Retry is what tries the update again.
  *
- * Not a failure of the Start when they run the version they had: OpenBot starts on it, and the
+ * Not a failure of the Start when they run the version they had: Adithya-Bot starts on it, and the
  * next Start tries the update again. A refusal before it began counts the same, `release_unavailable`
  * included: the CLI could not get the release this app installs (its download was out of reach on
  * Windows K), not that there was no newer one, which the status had already said there was.
@@ -255,15 +255,15 @@ function updateFailedSaid(step: string | null, runsWhatItHad = true): string {
     ? ` The update stopped while ${updateStepSaid(step)}.`
     : "";
   if (!runsWhatItHad)
-    return `OpenBot's services couldn't finish updating.${where} Your data is kept. Retry to try the update again.`;
+    return `Adithya-Bot's services couldn't finish updating.${where} Your data is kept. Retry to try the update again.`;
   return step
-    ? `OpenBot's services couldn't finish updating, so they run the version they had.${where} Your data is kept, and OpenBot tries again the next time it starts.`
-    : "OpenBot's services couldn't update, so they run the version they had. Your data is kept, and OpenBot tries again the next time it starts.";
+    ? `Adithya-Bot's services couldn't finish updating, so they run the version they had.${where} Your data is kept, and Adithya-Bot tries again the next time it starts.`
+    : "Adithya-Bot's services couldn't update, so they run the version they had. Your data is kept, and Adithya-Bot tries again the next time it starts.";
 }
 
 /** An update of the back end that stopped downloading: they run the version they had. */
 const UPDATE_STALLED_SAID =
-  "The update of OpenBot's services stopped downloading, so they run the version they had. OpenBot picks up the download the next time it starts.";
+  "The update of Adithya-Bot's services stopped downloading, so they run the version they had. Adithya-Bot picks up the download the next time it starts.";
 
 export type LocalSequence = State & {
   /** Set up, connected and reported ready and valid, and waiting for the go-ahead to start. */
@@ -769,7 +769,7 @@ export function useLocalSequence({
       }
       if (tries >= pollDelays.length) {
         const timedOut =
-          "OpenBot didn't get ready in time. Retry to check again.";
+          "Adithya-Bot didn't get ready in time. Retry to check again.";
         // The log says how long it waited and what the back end last said (`back_end_wait_ended`).
         backEndWaitEnded(timedOut);
         update({ blocked: { said: timedOut, reason: null } });
@@ -925,7 +925,7 @@ export function useLocalSequence({
         if (!target) return run("wait");
         const outcome = await latest.current.onStart(target);
         if (outcome === "failed") {
-          return stop({ said: "OpenBot did not start." });
+          return stop({ said: "Adithya-Bot did not start." });
         }
         go.current = false;
         // Waiting on something else, which gives the go-ahead again when it is done.
@@ -1183,7 +1183,7 @@ export function LocalIntelligence({
             <p className="cannot-cancel">
               {releasing || releaseDue
                 ? "You can't cancel this last step. Stopping it partway could leave the update half done."
-                : "You can't cancel this last step. Stopping it partway could leave OpenBot half started."}
+                : "You can't cancel this last step. Stopping it partway could leave Adithya-Bot half started."}
             </p>
           )}
           {/* A Podman machine too small has its Retry in its card (`PodmanTooSmall`). */}
@@ -1194,7 +1194,7 @@ export function LocalIntelligence({
           )}
           {offerStart && !running && at === null && (
             <button type="button" onClick={sequence.start}>
-              Start OpenBot
+              Start Adithya-Bot
             </button>
           )}
         </div>
@@ -1238,11 +1238,11 @@ export function LocalStatus({
     if (!download || !sequence.running || !sequence.download) return null;
     return (
       <SetupProgress
-        label="OpenBot download"
+        label="Adithya-Bot download"
         showElapsed={false}
         steps={[
           {
-            step: "Downloading the rest of OpenBot",
+            step: "Downloading the rest of Adithya-Bot",
             ok: true,
             running: true,
             // The row says the time left from the download's own speed.
@@ -1256,19 +1256,19 @@ export function LocalStatus({
     );
   }
   const needs = needsPerson(sequence);
-  // Stopped at Start: Intelligence got as far as ready and licensed, and OpenBot is what failed.
+  // Stopped at Start: Intelligence got as far as ready and licensed, and Adithya-Bot is what failed.
   const openBot = !needs && sequence.at === "start";
   return (
     <section
       className={`local-alert${needs ? " needs" : ""}`}
       role="alert"
-      aria-label={openBot ? "OpenBot" : "Setup"}
+      aria-label={openBot ? "Adithya-Bot" : "Setup"}
     >
       <h2>
         {needs
           ? "Setup needs you"
           : openBot
-            ? "OpenBot did not start"
+            ? "Adithya-Bot did not start"
             : "Setup stopped"}
       </h2>
       {needs ? (
@@ -1277,7 +1277,7 @@ export function LocalStatus({
         <>
           <p>
             {openBot
-              ? "Everything else is ready. Retry starts OpenBot again."
+              ? "Everything else is ready. Retry starts Adithya-Bot again."
               : plan && tooSmall
                 ? podmanTooSmallSaid(tooSmall, plan)
                 : (sequence.blocked?.said ?? sequence.problem?.said)}
@@ -1430,17 +1430,17 @@ function SignInToCopilotKit({ onSignedIn }: { onSignedIn: () => void }) {
   return (
     <div className="local-needs">
       <Lockup byCopilotKit />
-      <p>Sign in to finish setting up OpenBot.</p>
+      <p>Sign in to finish setting up Adithya-Bot.</p>
       {waiting ? (
         <CopilotKitSignInWait
           attempt={waiting}
-          waiting="Finish signing in to OpenBot in your browser…"
+          waiting="Finish signing in to Adithya-Bot in your browser…"
           onCancel={cancel}
         />
       ) : (
         <div className="row">
           <button type="button" onClick={signIn}>
-            Sign in to OpenBot
+            Sign in to Adithya-Bot
           </button>
         </div>
       )}
@@ -1493,8 +1493,8 @@ function AcceptTerms({
     return (
       <div className="local-needs">
         <p className="footnote">
-          OpenBot couldn't record your acceptance. If a coding agent or a script
-          opened OpenBot, quit it, open it yourself, and accept again.
+          Adithya-Bot couldn't record your acceptance. If a coding agent or a script
+          opened Adithya-Bot, quit it, open it yourself, and accept again.
         </p>
         <div className="row">
           <button type="button" onClick={onRetry}>
@@ -1507,8 +1507,7 @@ function AcceptTerms({
     <div className="local-needs">
       {/* The organization and the agreement's version are the log's, as on the Account step. */}
       <p>
-        To run OpenBot on this computer, accept the OpenBot by CopilotKit
-        license agreement.
+        To run Adithya-Bot on this computer, accept the license agreement.
       </p>
       <p className="footnote">
         <ExternalLink href={terms.url}>Read the license agreement</ExternalLink>

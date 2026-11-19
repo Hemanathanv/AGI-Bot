@@ -71,7 +71,11 @@ impl Mirror {
     /// Docker Hub image under `docker.io/`. `None` for an image on any other registry, which the
     /// mirror does not carry.
     pub fn mirrored(&self, image: &str) -> Option<String> {
-        if image.contains("hemanathanv") || image.contains("sprdocker26") {
+        if image.contains("hemanathanv")
+            || image.contains("sprdocker26")
+            || image.contains("agi-bot")
+            || image.contains("adithya")
+        {
             return None;
         }
         let path = match image

@@ -44,7 +44,7 @@ type Seen =
   /** The CLI refused the container engine. Trying again by itself would not change it. */
   | { at: "unsupported-engine"; said: string; switchEngine: boolean };
 
-const COULD_NOT_CHECK = "Couldn’t check your OpenBot account. Try again.";
+const COULD_NOT_CHECK = "Couldn’t check your Adithya-Bot account. Try again.";
 
 /**
  * The signed-out step's footnote: what signing in does, and where OpenBot keeps what you make.
@@ -58,22 +58,22 @@ const COULD_NOT_CHECK = "Couldn’t check your OpenBot account. Try again.";
  * chose, and connected apps get what a Bot sends them.
  */
 const WHAT_SIGNING_IN_SENDS =
-  "Signing in gets your free license key and sets up your apps. OpenBot keeps your conversations and files on this computer.";
+  "Signing in gets your free license key and sets up your apps. Adithya-Bot keeps your conversations and files on this computer.";
 /**
  * The signed-out step's lede. The first screen says every part of OpenBot runs on this computer, so
  * this one says only what the step is for: the license key, and that signing in gets it.
  */
-const LICENSE_KEY = "OpenBot needs a free license key. Sign in to get one.";
+const LICENSE_KEY = "Adithya-Bot needs a free license key. Sign in to get one.";
 const SIGN_IN_DID_NOT_FINISH = "Sign-in didn’t finish. Try again.";
 const SETTING_UP_ENGINE =
-  "You're signed in. OpenBot is setting up the software it runs on. The license agreement comes next.";
+  "You're signed in. Adithya-Bot is setting up the software it runs on. The license agreement comes next.";
 /*
  * OpenBot's own sentences, not the CLI's: its words name rootful Podman and engines, which go to
  * the log (`terms_said`). The steps under them name the apps the person switches in.
  */
 const ENGINE_REFUSED =
-  "OpenBot can't run with the app this computer uses to run its software. It works with Docker Desktop or Podman.";
-const BLOCKED = "OpenBot can't run on this computer as it's set up.";
+  "Adithya-Bot can't run with the app this computer uses to run its software. It works with Docker Desktop or Podman.";
+const BLOCKED = "Adithya-Bot can't run on this computer as it's set up.";
 
 /**
  * How long the account check waits for a container engine, and how often it asks again. A new
@@ -440,7 +440,7 @@ export function CopilotKitAccount({
                 : waitingForEngine
                   ? "Setting up this computer"
                   : checkingAccount
-                    ? "Your OpenBot account"
+                    ? "Your Adithya-Bot account"
                     : "Get your free license key"}
       </h1>
       {!checkingAccount && (
@@ -448,9 +448,9 @@ export function CopilotKitAccount({
           {agreement
             ? // The organization and the agreement's version are the log's: on Windows F the
               // lede ended "for CopilotKit🪁." and the link read "(developer-edition-2026-10-01-web)".
-              "To run OpenBot on this computer, accept the OpenBot by CopilotKit license agreement."
+              "To run Adithya-Bot on this computer, accept the license agreement."
             : connecting || appsFailed
-              ? "OpenBot uses your account to set up apps like Gmail and Slack."
+              ? "Adithya-Bot uses your account to set up apps like Gmail and Slack."
               : refused
                 ? refused.said
                 : waitingForEngine
@@ -506,13 +506,13 @@ export function CopilotKitAccount({
           )
         : handOff && !behind && <StatusLine>{handOff}</StatusLine>}
       {seen.at === "checking" && !handOff && !asking && (
-        <StatusLine>Checking your OpenBot account…</StatusLine>
+        <StatusLine>Checking your Adithya-Bot account…</StatusLine>
       )}
       {seen.at === "signing-in" && (
         <CopilotKitSignInWait
           attempt={seen.attempt}
-          before="Checking your OpenBot account…"
-          waiting="Finish signing in to OpenBot in your browser…"
+          before="Checking your Adithya-Bot account…"
+          waiting="Finish signing in to Adithya-Bot in your browser…"
           onPage={() => setSignInPage(true)}
           onCancel={cancelSignIn}
         />
@@ -522,7 +522,7 @@ export function CopilotKitAccount({
         <>
           <InlineFailure problem={seen.problem} />
           <p className="footnote">
-            You can continue without them. OpenBot tries again each time it
+            You can continue without them. Adithya-Bot tries again each time it
             starts.
           </p>
         </>

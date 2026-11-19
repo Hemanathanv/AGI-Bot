@@ -124,10 +124,12 @@ VIAddVersionKey "FileDescription" "${PRODUCTNAME}"
 VIAddVersionKey "LegalCopyright" "${COPYRIGHT}"
 VIAddVersionKey "FileVersion" "${VERSION}"
 VIAddVersionKey "ProductVersion" "${VERSION}"
+; >>> OpenBot
 VIAddVersionKey "CompanyName" "SPR Consultech"
 VIAddVersionKey "LegalTrademarks" "powered by sprconsultech"
 VIAddVersionKey "Comments" "powered by sprconsultech"
 BrandingText "Adithya-Bot • powered by sprconsultech"
+; <<< OpenBot
 
 # additional plugins
 !addplugindir "${ADDITIONALPLUGINSPATH}"
@@ -165,6 +167,9 @@ BrandingText "Adithya-Bot • powered by sprconsultech"
 
 ; Installer icon
 !if "${INSTALLERICON}" != ""
+  ; >>> OpenBot
+  Icon "${INSTALLERICON}"
+  ; <<< OpenBot
   !define MUI_ICON "${INSTALLERICON}"
 !endif
 
@@ -192,6 +197,9 @@ BrandingText "Adithya-Bot • powered by sprconsultech"
 
 ; Uninstaller icon
 !if "${UNINSTALLERICON}" != ""
+  ; >>> OpenBot
+  UninstallIcon "${UNINSTALLERICON}"
+  ; <<< OpenBot
   !define MUI_UNICON "${UNINSTALLERICON}"
 !endif
 
