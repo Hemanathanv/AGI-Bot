@@ -122,6 +122,7 @@ jobs:
     # Reading the releases is all the decision below needs.
     permissions:
       contents: read
+      packages: write
     outputs:
       becomes_latest: ${{ steps.latest.outputs.becomes_latest }}
       image_repository: ${{ steps.registry.outputs.repository }}
@@ -180,6 +181,20 @@ jobs:
           digest="$(scripts/release-files.sh "$tag" "$RUNNER_TEMP/release-files")"
           echo "digest=$digest" >> "$GITHUB_OUTPUT"
           echo "Release files of the OpenBot images at '$tag': $digest"
+      - name: Copy the backend release files to our registry
+        env:
+          DIGEST: ${{ steps.files.outputs.digest }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq skopeo
+          tag="$(sed -n 's/^OPENBOT_BACKEND_TAG=//p' backend-images.env | tail -1)"
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          skopeo copy --all --preserve-digests \
+            --dest-creds "$GITHUB_REPOSITORY_OWNER:$GH_TOKEN" \
+            "docker://ghcr.io/copilotkit/openbot@$DIGEST" \
+            "docker://ghcr.io/$owner/agi-bot:charts-$tag"
       # A starting release whose tag carries no migrations says which database it left in the release
       # manifest it attached. Every one that has a manifest is fetched; the policy check says which
       # it needed and did not get.
@@ -375,6 +390,62 @@ jobs:
     permissions:
       contents: read
 
+  # The bundled CLI names Intelligence images in this distribution's namespace. Copy the exact
+  # upstream manifests there before any release can point an installer at them.
+  intelligence-images:
+    name: publish Intelligence images to our registry
+    needs: [metadata, image-list]
+    if: >-
+      !cancelled() && needs.metadata.outputs.is_release == 'true' &&
+      needs.image-list.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      packages: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: desktop-images-${{ github.run_id }}
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq skopeo jq
+      - name: Copy and verify every Intelligence image
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REGISTRY_OWNER: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+          owner="${REGISTRY_OWNER,,}"
+          jq -e --arg owner "$owner" '
+            .images | all(.[]; (startswith("ghcr.io/copilotkit/") | not))
+          ' desktop-images.json >/dev/null || {
+            echo "::error::The desktop image list still points to ghcr.io/copilotkit."
+            exit 1
+          }
+          while IFS= read -r target; do
+            suffix="${target#ghcr.io/$owner/intelligence/}"
+            if [[ "$suffix" == "$target" ]]; then
+              echo "::error::Could not map $target to its source image."
+              exit 1
+            fi
+            source="ghcr.io/copilotkit/intelligence/$suffix"
+            if [[ "$target" == *@sha256:* ]]; then
+              digest="${target##*@}"
+              destination="${target%@*}:sha256-${digest#sha256:}"
+            else
+              digest=""
+              destination="$target"
+            fi
+            skopeo copy --all --preserve-digests \
+              --dest-creds "$REGISTRY_OWNER:$GH_TOKEN" \
+              "docker://$source" "docker://$destination"
+            if [[ -n "$digest" ]]; then
+              skopeo inspect --creds "$REGISTRY_OWNER:$GH_TOKEN" --raw \
+                "docker://${target}" >/dev/null
+            fi
+          done < <(jq -r --arg owner "$owner" '.images[] | select(startswith("ghcr.io/" + $owner + "/intelligence/"))' desktop-images.json | sort -u)
+
   # The tag and the release, once the images it describes are pushed, so nothing is announced that
   # was not built. The manifest is the useful artefact: it pins the digest, so a deploy or a rollback
   # names an exact image rather than a tag somebody could move. The installers come after: the
@@ -384,11 +455,11 @@ jobs:
   # installers until this one has all of its own (scripts/release-make-latest.sh).
   github-release:
     name: tag and release
-    needs: [metadata, verify, images, image-list]
+    needs: [metadata, verify, images, image-list, intelligence-images]
     if: >-
       !cancelled() && needs.metadata.outputs.is_release == 'true' &&
       needs.verify.result == 'success' && needs.images.result == 'success' &&
-      needs.image-list.result == 'success'
+      needs.image-list.result == 'success' && needs.intelligence-images.result == 'success'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -413,6 +484,10 @@ jobs:
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: ${{ needs.images.outputs.manifest-artifact }}
+      - name: Validate images belong to this registry
+        env:
+          VERSION: ${{ needs.metadata.outputs.version }}
+        run: node .github/scripts/check-desktop-images.mjs container-images.json "$VERSION" "$GITHUB_REPOSITORY_OWNER"
       # The list `image-list` wrote, attached beside it, so the release is never without it. Named
       # for the run and not the attempt: a re-run of this job alone is a new attempt, and the list
       # was uploaded by the first.

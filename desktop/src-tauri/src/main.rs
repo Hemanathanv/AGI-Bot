@@ -4423,8 +4423,8 @@ async fn start_stack_inner<R: tauri::Runtime>(
         // evidence, not the sentence: it names a published image, which is not a thing the
         // person chose or can change.
         Problem::with(
-            "This version of OpenBot does not include the Bot you picked. Go back and choose \
-                 another, or update OpenBot.",
+            "This version of Adithya-Bot does not include the Bot you picked. Go back and choose \
+                 another, or update Adithya-Bot.",
             error,
         )
     })?;

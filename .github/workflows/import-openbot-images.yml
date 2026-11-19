@@ -1,0 +1,98 @@
+name: Import OpenBot images to Adithya-Bot GHCR
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: Tag to publish under ghcr.io/hemanathanv (use a new tag)
+        required: true
+        default: imported-v1.1.0
+        type: string
+      manifest_version:
+        description: Version recorded in the generated container-images.json
+        required: true
+        default: v1.1.1
+        type: string
+  workflow_call:
+    inputs:
+      image_tag:
+        required: true
+        type: string
+      manifest_version:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+  attestations: write
+
+jobs:
+  images:
+    uses: ./.github/workflows/images.yml
+    with:
+      ref: ${{ github.sha }}
+      tags: ${{ inputs.image_tag }}
+      latest: false
+      manifest_version: ${{ inputs.manifest_version }}
+      backend_tag: ${{ inputs.image_tag }}
+
+  intelligence:
+    name: Import Intelligence images
+    needs: images
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      packages: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.3
+          no-cache: true
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
+        with:
+          toolchain: stable
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: container-images
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf skopeo
+      - name: List and copy the bundled CLI images
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          node .github/scripts/check-desktop-images.mjs container-images.json "${{ inputs.manifest_version }}" "$GITHUB_REPOSITORY_OWNER"
+          bun desktop/scripts/cli-bundle.ts darwin arm64
+          cargo run --locked --manifest-path desktop/src-tauri/Cargo.toml --example release_images -- \
+            docker-compose.yml container-images.json desktop/src-tauri/cli-bundle/cli/index.js > desktop-images.json
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          jq -e '.images | all(.[]; (startswith("ghcr.io/copilotkit/") | not))' desktop-images.json >/dev/null
+          while IFS= read -r target; do
+            suffix="${target#ghcr.io/$owner/intelligence/}"
+            source="ghcr.io/copilotkit/intelligence/$suffix"
+            if [[ "$target" == *@sha256:* ]]; then
+              digest="${target##*@}"
+              destination="${target%@*}:sha256-${digest#sha256:}"
+            else
+              digest=""
+              destination="$target"
+            fi
+            skopeo copy --all --preserve-digests \
+              --dest-creds "$GITHUB_REPOSITORY_OWNER:$GH_TOKEN" \
+              "docker://$source" "docker://$destination"
+            if [[ -n "$digest" ]]; then
+              skopeo inspect --creds "$GITHUB_REPOSITORY_OWNER:$GH_TOKEN" --raw "docker://$target" >/dev/null
+            fi
+          done < <(jq -r --arg owner "$owner" '.images[] | select(startswith("ghcr.io/" + $owner + "/intelligence/"))' desktop-images.json | sort -u)
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: desktop-images
+          path: desktop-images.json
+          if-no-files-found: error

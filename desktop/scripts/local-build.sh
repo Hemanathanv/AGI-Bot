@@ -213,9 +213,10 @@ fi
 BACKEND_TAG="$(sed -n 's/^OPENBOT_BACKEND_TAG=//p' backend-images.env | tail -1)"
 [ -n "$BACKEND_TAG" ] || die "backend-images.env names no OPENBOT_BACKEND_TAG"
 PINNED="{}"
-for pair in openbot:openbot server:openbot agent-computer:openbot supervisor:openbot-supervisor; do
+for pair in openbot:agi-bot server:agi-bot agent-computer:agi-bot supervisor:agi-bot-supervisor; do
   name="${pair%%:*}"
-  repository="ghcr.io/copilotkit/${pair#*:}"
+  owner="${REPOSITORY%%/*}"
+  repository="ghcr.io/${owner,,}/${pair#*:}"
   digest="$(docker buildx imagetools inspect "$repository:$BACKEND_TAG" --format '{{.Manifest.Digest}}')" \
     || die "could not read $repository:$BACKEND_TAG"
   [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]] || die "$repository:$BACKEND_TAG has no digest"
@@ -228,6 +229,7 @@ jq --arg version "$VERSION" --arg commit "$COMMIT" --argjson built "$BUILT" --ar
    # The OpenBot image under two more names, as a release writes them (.github/workflows/images.yml):
    # kept for one release, so the 1.0.2 and 1.0.3 apps can start an installation this build updated.
    | .images["agent-bot"] = .images.server | .images["agent-langgraph"] = .images.server' "$base" > "$MANIFEST"
+node .github/scripts/check-desktop-images.mjs "$MANIFEST" "$VERSION" "${REPOSITORY%%/*}"
 # Every image the published list names must be pinned, or the app refuses the manifest at Install.
 jq -e --slurpfile names .github/published-images.json \
   '[$names[0][] as $n | .images[$n].reference // "" | test("@sha256:[0-9a-f]{64}$")] | all' \

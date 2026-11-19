@@ -21,12 +21,16 @@ set -euo pipefail
 
 reference="${1:?Name the OpenBot images tag, such as v1.2.3, or the sha256: digest of its release files}"
 directory="${2:?Name the folder to write the release files into}"
+# Build-time provenance for the upstream backend image. Desktop never runs this reference.
 repository="ghcr.io/copilotkit/openbot"
 key="$(cd "$(dirname "$0")/.." && pwd)/docs/cosign.pub"
 
 case "$reference" in
   sha256:*) image="$repository@$reference" ;;
-  *) image="$repository:charts-$reference" ;;
+  *)
+    upstream="$(sed -n 's/^OPENBOT_UPSTREAM_TAG=//p' "$(dirname "$0")/../backend-images.env" | tail -1)"
+    image="$repository:charts-${upstream:-$reference}"
+    ;;
 esac
 
 if ! signed="$(cosign verify --key "$key" --insecure-ignore-tlog=true "$image")"; then

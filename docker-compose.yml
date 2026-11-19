@@ -402,7 +402,7 @@ services:
   # root-equivalent on the host, so only the supervisor holds it and only exposes Bot-level verbs.
   supervisor:
     # Pulled like the server's; see server above.
-    image: ${SUPERVISOR_IMAGE:-ghcr.io/copilotkit/openbot-supervisor:${OPENBOT_BACKEND_TAG:-see-backend-images.env}}
+    image: ${SUPERVISOR_IMAGE:-ghcr.io/hemanathanv/agi-bot-supervisor:${OPENBOT_BACKEND_TAG:-see-backend-images.env}}
     pull_policy: ${IMAGE_PULL_POLICY:-missing}
     # The same file, because this process does not read these itself: it forwards every EGRESS_PROXY
     # key out of its own environment into each computer it creates, so it has to be given them first.
@@ -549,10 +549,9 @@ services:
     # Built from this checkout. A release publishes it too, and IMAGE_PULL_POLICY=missing pulls that
     # instead, as OpenBot Desktop does.
     #
-    # The built image's tag carries the stack's project name, as the tag Compose gives a built
-    # service with no `image:` does. A tag is one name on the whole machine, so with one fixed tag a
-    # second stack's start moved it and the first stack's Bot was no longer the image it was built as.
-    image: ${LANGGRAPH_IMAGE:-${COMPOSE_PROJECT_NAME:-openbot}-agent-langgraph-agui:latest}
+    # Desktop supplies LANGGRAPH_IMAGE from the digest-pinned release manifest. A source checkout
+    # builds this service locally by default; the fallback name stays in this distribution's registry.
+    image: ${LANGGRAPH_IMAGE:-ghcr.io/hemanathanv/agi-bot-agent-langgraph-agui:${OPENBOT_BACKEND_TAG:-imported-v1.1.0}}
     pull_policy: ${IMAGE_PULL_POLICY:-build}
     ports:
       # Loopback, not every interface. The token is the boundary; this means an attacker needs to be

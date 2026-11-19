@@ -292,6 +292,16 @@ export function packCli(
       'const supported = engine.kind === "docker-desktop" ? parsed.data.OperatingSystem === "Docker Desktop" && /^Docker Desktop(?: |$)/.test(name) :',
       'const supported = engine.kind === "docker-desktop" ? true :',
     );
+    // The bundled CLI must pull Intelligence images from this distribution's registry.
+    // Keep the upstream digest values: the images copied to our namespace must have
+    // the same digest, and release validation checks that they are available there.
+    indexJs = indexJs.replaceAll(
+      "ghcr.io/copilotkit/intelligence/",
+      "ghcr.io/hemanathanv/intelligence/",
+    );
+    if (indexJs.includes("ghcr.io/copilotkit/")) {
+      throw new Error("The bundled CLI still refers to ghcr.io/copilotkit.");
+    }
     writeFileSync(indexJsPath, indexJs, "utf8");
   }
   const lockfile = ["npm-shrinkwrap.json", "package-lock.json"]

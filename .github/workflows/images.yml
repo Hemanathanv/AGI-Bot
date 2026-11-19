@@ -163,8 +163,33 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: read
+      packages: write
     steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+      - name: Install image copy tool
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq skopeo
+      - name: Publish the backend and supervisor under this account
+        env:
+          TAG: ${{ needs.components.outputs.backend-tag }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          upstream="$(sed -n 's/^OPENBOT_UPSTREAM_TAG=//p' backend-images.env | tail -1)"
+          test -n "$upstream"
+          for pair in openbot:agi-bot openbot-supervisor:agi-bot-supervisor; do
+            source="${pair%%:*}"
+            destination="${pair#*:}"
+            skopeo copy --all --preserve-digests \
+              --dest-creds "$GITHUB_REPOSITORY_OWNER:$GH_TOKEN" \
+              "docker://ghcr.io/copilotkit/$source:$upstream" \
+              "docker://ghcr.io/$owner/$destination:$TAG"
+          done
       - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
       - uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
         with:
@@ -179,9 +204,9 @@ jobs:
           mkdir -p manifests
           # The name the manifest gives each image, as OpenBot Desktop reads it, its repository, and
           # the architectures it must carry.
-          for entry in openbot:openbot:amd64,arm64 supervisor:openbot-supervisor:amd64,arm64; do
+          for entry in openbot:agi-bot:amd64,arm64 supervisor:agi-bot-supervisor:amd64,arm64; do
             IFS=: read -r name image required <<< "$entry"
-            repository="ghcr.io/copilotkit/$image"
+            repository="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/$image"
             digest="$(docker buildx imagetools inspect "$repository:$TAG" --format '{{.Manifest.Digest}}')"
             [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]] || { echo "::error::$repository:$TAG has no digest."; exit 1; }
             platforms="$(docker buildx imagetools inspect --raw "$repository@$digest" \

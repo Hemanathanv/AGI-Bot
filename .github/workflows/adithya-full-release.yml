@@ -1,0 +1,109 @@
+name: Adithya-Bot full test release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: New tag and test release version
+        type: string
+        required: true
+        default: v1.1.1
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check the release version
+        env:
+          VERSION: ${{ inputs.version }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          node -e '
+            const fs = require("node:fs");
+            const version = process.env.VERSION;
+            if (!/^v\d+\.\d+\.\d+$/.test(version) ||
+                version !== "v" + JSON.parse(fs.readFileSync("package.json")).version ||
+                version !== JSON.parse(fs.readFileSync("release-policy.json")).version) {
+              throw Error("The tag, package.json, and release-policy.json must agree");
+            }
+          '
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$VERSION" >/dev/null 2>&1; then
+            echo "::error::The tag $VERSION already exists. Choose a new version."
+            exit 1
+          fi
+
+  tests:
+    needs: validate
+    uses: ./.github/workflows/ci.yml
+    permissions:
+      contents: read
+
+  images:
+    needs: [validate, tests]
+    uses: ./.github/workflows/import-openbot-images.yml
+    with:
+      image_tag: ${{ inputs.version }}
+      manifest_version: ${{ inputs.version }}
+    permissions:
+      contents: read
+      actions: read
+      packages: write
+      id-token: write
+      attestations: write
+
+  desktop:
+    needs: images
+    uses: ./.github/workflows/desktop-build.yml
+    with:
+      ref: ${{ github.sha }}
+      channel: release
+      bundle_cli: true
+      manifest_artifact: container-images
+      retention_days: 30
+      platforms: '["macos","windows","linux"]'
+    permissions:
+      contents: read
+
+  publish:
+    needs: [images, desktop]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: container-images
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: desktop-images
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: openbot-desktop-*
+          path: installers
+      - name: Verify and publish the test release
+        env:
+          VERSION: ${{ inputs.version }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          node .github/scripts/check-desktop-images.mjs container-images.json "$VERSION" "$GITHUB_REPOSITORY_OWNER"
+          jq -e '.images | all(.[]; (startswith("ghcr.io/copilotkit/") | not))' desktop-images.json >/dev/null
+          mapfile -d '' -t assets < <(find installers -type f \( -name '*.dmg' -o -name '*.exe' -o -name '*.AppImage' -o -name '*.deb' -o -name '*.rpm' \) -print0)
+          test "${#assets[@]}" -ge 3
+          printf 'Adithya-Bot %s test build. Installers are unsigned or ad-hoc signed; verify before distribution.\n' "$VERSION" > notes.md
+          gh release create "$VERSION" container-images.json desktop-images.json "${assets[@]}" \
+            --target "$GITHUB_SHA" --title "Adithya-Bot $VERSION test build" \
+            --notes-file notes.md --prerelease

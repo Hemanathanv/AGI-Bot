@@ -297,10 +297,10 @@ fn ready_now(
 }
 
 /// The registry the back end's images come from first (`local_images::Mirror::standard`).
-const REGISTRY: &str = "https://downloads.copilotkit.ai/v2/";
+const REGISTRY: &str = "https://ghcr.io/v2/";
 /// Any HTTP answer from `REGISTRY`, asked from inside the machine: the status, or `000` when it
 /// could not connect. Bounded, so one check never holds the wait.
-const REGISTRY_CHECK: &str = "timeout 10 curl -sS -o /dev/null -w '%{http_code}' --connect-timeout 8 https://downloads.copilotkit.ai/v2/ || true";
+const REGISTRY_CHECK: &str = "timeout 10 curl -sS -o /dev/null -w '%{http_code}' --connect-timeout 8 https://ghcr.io/v2/ || true";
 
 fn start_with(
     run: &mut impl FnMut(&[&str]) -> Result<String, String>,

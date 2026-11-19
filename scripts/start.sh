@@ -543,7 +543,7 @@ start_server() {
 }
 server_did_not_start() {
   cat "$LOGS/server-start.log" >&2
-  red "  The server did not start from ghcr.io/copilotkit/adithya-bot:$OPENBOT_BACKEND_TAG."
+  red "  The server did not start from ghcr.io/hemanathanv/agi-bot:$OPENBOT_BACKEND_TAG."
   red "  Log: docker compose logs server"
   exit 1
 }
@@ -553,7 +553,7 @@ if ! start_server; then
   fi
   info "  Docker did not see $ROOT/.adithya-bot; showing it the folder and starting the server again"
   docker run --rm -v "$ROOT/.adithya-bot:/adithya-bot" --entrypoint true \
-    "$(setting SERVER_IMAGE "ghcr.io/copilotkit/adithya-bot:$OPENBOT_BACKEND_TAG")" >/dev/null 2>&1 || true
+    "$(setting SERVER_IMAGE "ghcr.io/hemanathanv/agi-bot:$OPENBOT_BACKEND_TAG")" >/dev/null 2>&1 || true
   start_server || server_did_not_start
 fi
 rm -f "$SERVER_ENV"
@@ -654,7 +654,7 @@ Try:
 
 Logs: $LOGS (the app)
   The server: docker compose logs server
-  Images: ghcr.io/copilotkit/adithya-bot:$OPENBOT_BACKEND_TAG and the rest, from backend-images.env
+  Images: ghcr.io/hemanathanv/agi-bot:$OPENBOT_BACKEND_TAG and the rest, from backend-images.env
 
 Stop all of it: bash scripts/stop.sh
   The app, the server, the Docker services, and each Bot's computer, which compose

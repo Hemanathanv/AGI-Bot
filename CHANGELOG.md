@@ -8,6 +8,11 @@ Newest first. `Unreleased` is what is on `main` and not yet tagged.
 
 ## Unreleased
 
+## 1.1.1
+
+- Desktop installs now require a complete image manifest and pull Adithya-Bot images from the Hemanathanv registry.
+- The release builds and checks installers for Windows, macOS, and Linux.
+
 ## 1.1.0
 
 **Before upgrading.** Read these first: several of them change what a script, a proxy, a Compose

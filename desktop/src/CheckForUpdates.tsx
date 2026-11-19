@@ -150,7 +150,7 @@ export function CheckForUpdates() {
       <summary>Updates</summary>
       {updatesItself === true && (
         <p>
-          OpenBot updates itself with signed updates from its publisher. The
+          Adithya-Bot updates itself with signed updates from its publisher. The
           next Start after an update brings this installation to the same
           version and keeps your data.
         </p>
@@ -178,17 +178,17 @@ export function CheckForUpdates() {
           </button>
           {installFailure && (
             <p className="caution" role="alert">
-              OpenBot could not install the update: {installFailure}
+              Adithya-Bot could not install the update: {installFailure}
             </p>
           )}
         </>
       )}
       {checked?.found === "upToDate" && (
-        <p role="status">OpenBot {checked.current} is up to date.</p>
+        <p role="status">Adithya-Bot {checked.current} is up to date.</p>
       )}
       {checked?.found === "installing" && (
         <p role="status">
-          OpenBot is downloading {checked.version} and restarts when it's done.
+          Adithya-Bot is downloading {checked.version} and restarts when it's done.
         </p>
       )}
       {checked?.found === "notOffered" && (
