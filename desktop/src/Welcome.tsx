@@ -106,7 +106,9 @@ export function Welcome({
         }}
       >
         <BotLogo size={32} />
-        <span style={{ whiteSpace: "nowrap", fontWeight: 600 }}>Adithya-Bot</span>
+        <span style={{ whiteSpace: "nowrap", fontWeight: 600 }}>
+          Adithya-Bot
+        </span>
         <img
           src={companyLogo}
           alt="SPR Consultech"
@@ -216,9 +218,9 @@ function SelfHosted({
       <section className="needs" aria-labelledby="needs-heading">
         <h2 id="needs-heading">What this computer needs</h2>
         <p className="lede">
-          Self-hosted runs every part of Adithya-Bot on this computer: the app, its
-          server and database, your Bots&apos; memory, and a computer for each
-          Bot to work on.
+          Self-hosted runs every part of Adithya-Bot on this computer: the app,
+          its server and database, your Bots&apos; memory, and a computer for
+          each Bot to work on.
         </p>
         <ul className="needs-list">
           {SELF_HOSTED_NEEDS.map((need) => (

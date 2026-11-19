@@ -521,7 +521,10 @@ function runtimeRow(
   intelligence: ReadinessInput["intelligence"],
 ): ReadinessRow {
   if (runtime === "running") {
-    return { state: "ready", said: "The software Adithya-Bot runs on is running." };
+    return {
+      state: "ready",
+      said: "The software Adithya-Bot runs on is running.",
+    };
   }
   const notRunning = blocked(
     "The software Adithya-Bot runs on isn't running.",

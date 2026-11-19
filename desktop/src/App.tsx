@@ -104,7 +104,7 @@ function installationKeyFor(root: string, harness: HarnessChoice | null) {
  * come forward is still where it was, so a failure here changes nothing.
  */
 function comeForward(why: string) {
-  invoke("bring_setup_to_front", { why }).catch(() => { });
+  invoke("bring_setup_to_front", { why }).catch(() => {});
 }
 
 /*
@@ -143,11 +143,11 @@ type Launch =
   | { at: "opening" }
   /** The first screen with that OpenBot's address, to sign in to it again or choose otherwise. */
   | {
-    at: "connect";
-    address: string;
-    problem: Problem | null;
-    reopen: boolean;
-  };
+      at: "connect";
+      address: string;
+      problem: Problem | null;
+      reopen: boolean;
+    };
 
 /**
  * Asks where OpenBot runs before anything else. On this computer, setup carries on exactly as it
@@ -231,7 +231,7 @@ function Setup() {
       <main>
         <Welcome
           hosting="connect"
-          onConnect={() => { }}
+          onConnect={() => {}}
           // The saved choice goes back to this computer, then setup carries on as a first run.
           onThisComputer={async () => {
             await invoke("use_this_computer");
@@ -244,7 +244,7 @@ function Setup() {
               ? () => invoke<void>("show_connected")
               : undefined,
           }}
-          onInstall={() => { }}
+          onInstall={() => {}}
         />
       </main>
     );
@@ -403,7 +403,7 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
   const startEarlyDownloads = useCallback(async () => {
     if (!root.trim()) return;
     await invoke("start_early_downloads", { root: root.trim() }).catch(
-      () => { },
+      () => {},
     );
   }, [root]);
   /*
@@ -488,7 +488,7 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
   /*
    * Every notice about the last quit or stop is about that run: what stopped it (`last_failure` at
    * launch, such as "OpenBot had trouble shutting down last time.") and the services it left
-   * running ("When Adithya-Bot last quit, some 
+   * running ("When Adithya-Bot last quit, some
    * of its services didn't stop."). Once Start runs, they
    * go: a Start that then stops says why in its own row. Kept, they read as the reason this run
    * stopped, through Start and every Retry. Stop still asks those services to stop, and says so
@@ -540,7 +540,7 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
     if (last.offered === intelligenceOffered && last.root === root) return;
     if (!last.offered && !intelligenceOffered) return;
     offeredToMenus.current = { root, offered: intelligenceOffered };
-    offerLocalIntelligence(root, intelligenceOffered).catch(() => { });
+    offerLocalIntelligence(root, intelligenceOffered).catch(() => {});
   }, [root, intelligenceOffered]);
   // Stop Adithya-Bot was chosen in this window: nothing local starts again on its own.
   const stoppedByChoice = useRef(false);
@@ -612,7 +612,7 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
           setIntelligenceNotice(found);
         }
       })
-      .catch(() => { });
+      .catch(() => {});
     // A supervisor that stopped retrying must stay stopped when it returns to this window.
     const interruptedRun = invoke<Problem | null>("last_failure")
       .then((found) => {
@@ -656,8 +656,8 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
          */
         const installedHere = Boolean(
           configured?.installation ||
-          configured?.launch ||
-          configured?.localEval,
+            configured?.launch ||
+            configured?.localEval,
         );
         let canResume = false;
         if (!owed) {
@@ -1297,7 +1297,9 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
         <div className="sheet">
           <Sections at="Install" />
           <h1>
-            {installationReady ? "Installation complete" : "Installing Adithya-Bot"}
+            {installationReady
+              ? "Installation complete"
+              : "Installing Adithya-Bot"}
           </h1>
           <p className="lede">
             {installationReady
@@ -1423,9 +1425,9 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
           onBack={
             returningToInstallation
               ? () => {
-                setSteps([]);
-                setStep("connect");
-              }
+                  setSteps([]);
+                  setStep("connect");
+                }
               : undefined
           }
           failure={displayedFailure && <Failure problem={displayedFailure} />}
@@ -1443,12 +1445,12 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
   // Start is moving the deployment to this app's release: said while it runs, which can be minutes.
   const updating = busy
     ? [...steps]
-      .reverse()
-      .find(
-        (row) =>
-          (row.step === "release" || row.step === "update-images") &&
-          row.running,
-      )
+        .reverse()
+        .find(
+          (row) =>
+            (row.step === "release" || row.step === "update-images") &&
+            row.running,
+        )
     : undefined;
   // One row while it updates, with its download's bar once there is one: "Installing OpenBot" sat
   // unchanged for minutes while the update's software downloaded. Not while the Start journey
@@ -1484,8 +1486,8 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
           <h1>
             {localStarting || installingAfresh
               ? // A Start that moves the installation to this app's release is an update, and says
-              // so: "Starting Adithya-Bot" over "Updating OpenBot..." read as if nothing were updated.
-              releaseDue && !installingAfresh
+                // so: "Starting Adithya-Bot" over "Updating OpenBot..." read as if nothing were updated.
+                releaseDue && !installingAfresh
                 ? "Updating Adithya-Bot"
                 : "Starting Adithya-Bot"
               : "Adithya-Bot is stopped"}
@@ -1493,9 +1495,9 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
           <p className="lede">
             {localStarting || installingAfresh
               ? // No time of its own: the card under it says how long is left, from how long each
-              // part takes. "This usually takes a minute or two" sat over "About 3 minutes left"
-              // on Windows G, and the start took four.
-              "Adithya-Bot is getting ready and opens by itself."
+                // part takes. "This usually takes a minute or two" sat over "About 3 minutes left"
+                // on Windows G, and the start took four.
+                "Adithya-Bot is getting ready and opens by itself."
               : "Your installation and saved connections are ready to reopen."}
           </p>
           {freshInstall || (
@@ -1638,7 +1640,9 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
         {/* A failure outranks `running`. The supervisor gives up on a process and sends the window
           back here, and a heading that still says everything is running while the box underneath
           names the process that stopped is a screen arguing with itself. */}
-        <h1>{displayedFailure ? "Adithya-Bot stopped" : "Adithya-Bot is running"}</h1>
+        <h1>
+          {displayedFailure ? "Adithya-Bot stopped" : "Adithya-Bot is running"}
+        </h1>
         {/* The back end runs the release it had: information, said where the lede goes. Nothing
           failed, so it is not drawn as a failure and offers no help. */}
         {!displayedFailure && backEndNotice && (
@@ -1648,8 +1652,8 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
         )}
         {!displayedFailure && !releaseNotice && !backEndNotice && (
           <p className="lede">
-            Adithya-Bot is open in this window. You can also show it or stop it from
-            its icon in {trayPlace()}.
+            Adithya-Bot is open in this window. You can also show it or stop it
+            from its icon in {trayPlace()}.
           </p>
         )}
         {/* Start went back to the version this installation had. Said before handing over. */}
@@ -1706,11 +1710,11 @@ function settleProgress(steps: Progress[], problem?: Problem): Progress[] {
   return steps.map((step) =>
     step.running
       ? {
-        ...step,
-        running: false,
-        ok: !problem,
-        detail: problem?.said ?? "Finished.",
-      }
+          ...step,
+          running: false,
+          ok: !problem,
+          detail: problem?.said ?? "Finished.",
+        }
       : step,
   );
 }

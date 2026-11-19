@@ -209,8 +209,8 @@ export function StatusWindow({ readEveryMs = 5000 }: { readEveryMs?: number }) {
       <div className="sheet status-sheet">
         <h1>Status</h1>
         <p className="lede">
-          See what Adithya-Bot is running on this computer and how much memory it
-          uses.
+          See what Adithya-Bot is running on this computer and how much memory
+          it uses.
         </p>
 
         {!status ? (
@@ -327,8 +327,8 @@ export function StatusWindow({ readEveryMs = 5000 }: { readEveryMs?: number }) {
                 </div>
                 {status.openbotRunning && (
                   <p className="footnote">
-                    Adithya-Bot needs these services while it runs. Stopping them
-                    frees memory until you start them again here.
+                    Adithya-Bot needs these services while it runs. Stopping
+                    them frees memory until you start them again here.
                   </p>
                 )}
               </section>
@@ -344,8 +344,8 @@ export function StatusWindow({ readEveryMs = 5000 }: { readEveryMs?: number }) {
               </div>
               {!status.engine && (
                 <p className="footnote">
-                  Adithya-Bot needs this to run. If you use Docker Desktop, open it
-                  and wait for it to start.
+                  Adithya-Bot needs this to run. If you use Docker Desktop, open
+                  it and wait for it to start.
                 </p>
               )}
             </section>

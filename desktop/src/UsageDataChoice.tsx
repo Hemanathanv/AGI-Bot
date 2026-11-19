@@ -85,7 +85,9 @@ export function UsageDataChoice() {
             ? "Usage data is turned off on this computer. Adithya-Bot sends none."
             : WHAT_IT_SHARES}
         </label>{" "}
-        <ExternalLink href={USAGE_DATA_DOC}>What Adithya-Bot sends</ExternalLink>
+        <ExternalLink href={USAGE_DATA_DOC}>
+          What Adithya-Bot sends
+        </ExternalLink>
       </p>
       {failed && (
         <p className="usage-choice-failed inline-error" role="alert">

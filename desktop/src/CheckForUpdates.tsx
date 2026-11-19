@@ -188,7 +188,8 @@ export function CheckForUpdates() {
       )}
       {checked?.found === "installing" && (
         <p role="status">
-          Adithya-Bot is downloading {checked.version} and restarts when it's done.
+          Adithya-Bot is downloading {checked.version} and restarts when it's
+          done.
         </p>
       )}
       {checked?.found === "notOffered" && (

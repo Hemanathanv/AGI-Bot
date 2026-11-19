@@ -4,8 +4,15 @@
   justify-content: center;
   position: relative;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #38bdf8 0%, #1e40af 50%, #0f172a 100%);
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.5), inset 0 0 6px rgba(255, 255, 255, 0.5);
+  background: radial-gradient(
+    circle at 35% 30%,
+    #38bdf8 0%,
+    #1e40af 50%,
+    #0f172a 100%
+  );
+  box-shadow:
+    0 0 12px rgba(56, 189, 248, 0.5),
+    inset 0 0 6px rgba(255, 255, 255, 0.5);
   box-sizing: border-box;
   flex-shrink: 0;
   transition: transform 0.2s ease;
@@ -48,7 +55,9 @@
   height: 60%;
   background: #00f0ff;
   border-radius: 9999px;
-  box-shadow: 0 0 6px #00f0ff, 0 0 12px rgba(0, 240, 255, 0.85);
+  box-shadow:
+    0 0 6px #00f0ff,
+    0 0 12px rgba(0, 240, 255, 0.85);
   animation: bot-eye-blink 3.8s infinite ease-in-out;
   transform-origin: center center;
 }
@@ -58,11 +67,15 @@
 }
 
 @keyframes bot-eye-blink {
-  0%, 86%, 94%, 100% {
+  0%,
+  86%,
+  94%,
+  100% {
     transform: scaleY(1);
     opacity: 1;
   }
-  88%, 92% {
+  88%,
+  92% {
     transform: scaleY(0.08);
     opacity: 0.5;
   }

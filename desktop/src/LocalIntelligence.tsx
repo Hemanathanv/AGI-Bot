@@ -1493,8 +1493,9 @@ function AcceptTerms({
     return (
       <div className="local-needs">
         <p className="footnote">
-          Adithya-Bot couldn't record your acceptance. If a coding agent or a script
-          opened Adithya-Bot, quit it, open it yourself, and accept again.
+          Adithya-Bot couldn't record your acceptance. If a coding agent or a
+          script opened Adithya-Bot, quit it, open it yourself, and accept
+          again.
         </p>
         <div className="row">
           <button type="button" onClick={onRetry}>
@@ -1506,9 +1507,7 @@ function AcceptTerms({
   return (
     <div className="local-needs">
       {/* The organization and the agreement's version are the log's, as on the Account step. */}
-      <p>
-        To run Adithya-Bot on this computer, accept the license agreement.
-      </p>
+      <p>To run Adithya-Bot on this computer, accept the license agreement.</p>
       <p className="footnote">
         <ExternalLink href={terms.url}>Read the license agreement</ExternalLink>
       </p>
