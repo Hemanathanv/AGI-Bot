@@ -6,7 +6,7 @@ export function Trademark() {
   return null;
 }
 
-export function BrandName({ children }: { children?: any }) {
+export function BrandName({ children }: { children?: React.ReactNode }) {
   if (typeof children === "string") {
     if (children === "OpenBot" || children === "OpenBot for Business") {
       return "Adithya-Bot";

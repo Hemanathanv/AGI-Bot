@@ -2,7 +2,6 @@ import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CheckForUpdates } from "./CheckForUpdates";
-import { CopilotKitAccount } from "./CopilotKitAccount";
 import {
   EarlyDownloadsLine,
   earlyDownload,
@@ -37,7 +36,6 @@ import { PausePodman, PodmanGoAhead } from "./PodmanGoAhead";
 import {
   engineNow,
   goAheadNow,
-  handOffNow,
   pauseOfferNow,
   BehindSlot,
   INSTALL_BLURB,
@@ -356,7 +354,7 @@ function LocalSetup({ address, choose }: { address: string; choose: boolean }) {
    */
   const intelligenceQueued = useRef(false);
   /** Setup's Try again on the account step, which asks that step's own check again too. */
-  const [setupRetries, setSetupRetries] = useState(0);
+  const [_setupRetries, _setSetupRetries] = useState(0);
   const engineReady = steps.some(
     (row) => row.step === "engine" && row.ok && !row.running,
   );

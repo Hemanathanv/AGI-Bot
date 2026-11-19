@@ -1,3 +1,5 @@
+/* biome-ignore-all lint/complexity/noImportantStyles: These overrides hide legacy branded UI. */
+/* biome-ignore-all lint/style/noDescendingSpecificity: Legacy overrides intentionally follow the original rules. */
 /*
  * OpenBot Desktop: the setup window, in OpenBot's own visual system.
  *

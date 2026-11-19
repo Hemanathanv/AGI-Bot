@@ -12,7 +12,7 @@ const SECTIONS: Section[] = ["Install", "AI", "Start"];
 /**
  * Adithya-Bot's mark and name, with SPR Consultech company logo beside it.
  */
-export function Lockup({ byCopilotKit = false }: { byCopilotKit?: boolean }) {
+export function Lockup(_props: { byCopilotKit?: boolean }) {
   return (
     <div
       className="lockup"
