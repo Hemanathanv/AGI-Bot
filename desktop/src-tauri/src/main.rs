@@ -21505,6 +21505,17 @@ fn main() {
         }
         std::env::remove_var("COPILOTKIT_TELEMETRY_DISABLED");
         std::env::remove_var("DO_NOT_TRACK");
+        // On a Windows runner with a responding engine and less than the space setup requires,
+        // the drive guard blocks setup before the fake CLI can return its test answer.
+        if cfg!(windows) {
+            let found = engine::detect_saved(None);
+            if let Some(address) = found.address.filter(|_| found.responding) {
+                local_eval::use_engine(&address);
+                if local_eval::drive_short().is_some() {
+                    return;
+                }
+            }
+        }
         // No engine to find: the CLI's own answer is the whole of the failure.
         let empty = temp_root("openbot-local-setup-no-engine");
         std::fs::create_dir_all(&empty).unwrap();
