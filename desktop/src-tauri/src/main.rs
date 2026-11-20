@@ -17822,7 +17822,7 @@ mod tests {
             .iter()
             .find(|window| window.label == "main")
             .unwrap();
-        assert_eq!(built.title, "OpenBot");
+        assert_eq!(built.title, "Adithya-Bot");
         assert_eq!((built.width, built.height), (1000.0, 800.0));
         assert_eq!(
             (built.min_width, built.min_height),
