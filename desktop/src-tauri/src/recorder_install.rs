@@ -1,4 +1,4 @@
-//! Writes the native messaging host manifests that let the Recorder extension find OpenBot Desktop.
+//! Writes the native messaging host manifests that let the Recorder extension find Adithya-Bot Desktop.
 //!
 //! Where each manifest goes, checked against the official pages:
 //! - Chrome and Chromium, macOS, Linux and the Windows registry key:
@@ -229,7 +229,7 @@ pub fn host_manifest(path_to_exe: &Path) -> Value {
 pub fn host_manifest_with(path_to_exe: &Path, store: &StoreIds) -> Value {
     json!({
         "name": host_name(),
-        "description": "OpenBot Desktop: lets the Recorder find this computer's OpenBot",
+        "description": "Adithya-Bot Desktop: lets the Recorder find this computer's Adithya-Bot",
         "path": path_to_exe.to_string_lossy(),
         "type": "stdio",
         "allowed_origins": allowed_origins_with(store),
@@ -283,7 +283,7 @@ pub fn data_directory(os: Os, browser: Browser, dirs: UserDirs) -> PathBuf {
 pub fn host_manifest_location(os: Os, browser: Browser, dirs: UserDirs) -> PathBuf {
     match os {
         Os::Windows => windows_local_app_data(dirs)
-            .join("OpenBot")
+            .join("Adithya-Bot")
             .join("recorder")
             .join(manifest_file_name()),
         Os::Mac | Os::Linux => data_directory(os, browser, dirs)
@@ -363,9 +363,9 @@ fn translocation_mount(_path: &Path) -> Option<(PathBuf, PathBuf)> {
     None
 }
 
-/// Where a translocated Mac app really is: `/Applications/OpenBot.app/Contents/MacOS/openbot-desktop`
-/// for `<mount>/d/OpenBot.app/Contents/MacOS/openbot-desktop`, when `<mount>` holds the app copied
-/// from `/Applications/OpenBot.app`. None when the path is not inside that mount.
+/// Where a translocated Mac app really is: `/Applications/Adithya-Bot.app/Contents/MacOS/openbot-desktop`
+/// for `<mount>/d/Adithya-Bot.app/Contents/MacOS/openbot-desktop`, when `<mount>` holds the app copied
+/// from `/Applications/Adithya-Bot.app`. None when the path is not inside that mount.
 fn untranslocated(current_exe: &Path, mounted_on: &Path, mounted_from: &Path) -> Option<PathBuf> {
     let inside = current_exe.strip_prefix(mounted_on).ok()?;
     let mut parts = inside.components();
@@ -391,7 +391,7 @@ fn stable_host_path_with(
                 Ok(appimage.to_path_buf())
             } else if exe.starts_with("/tmp/.mount_") {
                 Err(Problem::plain(
-                    "Run OpenBot Desktop from its AppImage file to let the Recorder find it.",
+                    "Run Adithya-Bot Desktop from its AppImage file to let the Recorder find it.",
                 ))
             } else {
                 Ok(current_exe.to_path_buf())
@@ -407,7 +407,7 @@ fn stable_host_path_with(
             .and_then(|(on, from)| untranslocated(current_exe, &on, &from))
             .filter(|original| !original.starts_with("/Volumes"))
             .ok_or_else(|| {
-                Problem::plain("Move OpenBot Desktop to Applications to let the Recorder find it.")
+                Problem::plain("Move Adithya-Bot Desktop to Applications to let the Recorder find it.")
             }),
         Os::Mac | Os::Windows => Ok(current_exe.to_path_buf()),
     }
@@ -425,7 +425,7 @@ fn write_manifest(
     }
     writer.write_file(path, &contents).map_err(|error| {
         Problem::with(
-            "OpenBot Desktop could not set up the Recorder.",
+            "Adithya-Bot Desktop could not set up the Recorder.",
             format!("{}: {error}", path.display()),
         )
     })
@@ -446,7 +446,7 @@ pub fn install(
             for argv in registry_commands(browser, &manifest) {
                 writer.run(&argv).map_err(|error| {
                     Problem::with(
-                        "OpenBot Desktop could not set up the Recorder.",
+                        "Adithya-Bot Desktop could not set up the Recorder.",
                         format!("{}: {error}", argv.join(" ")),
                     )
                 })?;
@@ -531,11 +531,11 @@ mod tests {
             Os::Mac => home
                 .join("Library")
                 .join("Application Support")
-                .join("OpenBot"),
+                .join("Adithya-Bot"),
             Os::Windows => var("LOCALAPPDATA")
                 .map(PathBuf::from)
                 .unwrap_or_else(|| home.join("AppData").join("Local"))
-                .join("OpenBot"),
+                .join("Adithya-Bot"),
             Os::Linux => var("XDG_DATA_HOME")
                 .map(PathBuf::from)
                 .filter(|path| path.to_string_lossy().starts_with('/'))
@@ -602,7 +602,7 @@ mod tests {
         let shared: Value =
             serde_json::from_str(include_str!("../../../shared/recorder-extension.json")).unwrap();
         assert_eq!(host_name(), shared["nativeHost"]);
-        assert_eq!(host_name(), "ai.copilotkit.openbot.recorder");
+        assert_eq!(host_name(), "com.hemanathanv.adithyabot.recorder");
         assert_eq!(
             extension_origin(),
             format!(
@@ -616,14 +616,14 @@ mod tests {
     #[test]
     fn manifest_names_the_host_the_path_and_only_the_recorders_own_origins() {
         let manifest = host_manifest(Path::new(
-            "/Applications/OpenBot.app/Contents/MacOS/openbot",
+            "/Applications/Adithya-Bot.app/Contents/MacOS/openbot",
         ));
         assert_eq!(
             manifest,
             serde_json::json!({
-                "name": "ai.copilotkit.openbot.recorder",
-                "description": "OpenBot Desktop: lets the Recorder find this computer's OpenBot",
-                "path": "/Applications/OpenBot.app/Contents/MacOS/openbot",
+                "name": "com.hemanathanv.adithyabot.recorder",
+                "description": "Adithya-Bot Desktop: lets the Recorder find this computer's Adithya-Bot",
+                "path": "/Applications/Adithya-Bot.app/Contents/MacOS/openbot",
                 "type": "stdio",
                 "allowed_origins": shared_origins(),
             })
@@ -692,7 +692,7 @@ mod tests {
 
     #[test]
     fn the_manifest_allows_each_store_id_exactly_and_the_fixed_one_once() {
-        let exe = Path::new("/Applications/OpenBot.app/Contents/MacOS/openbot");
+        let exe = Path::new("/Applications/Adithya-Bot.app/Contents/MacOS/openbot");
         let both = StoreIds {
             chrome: Some(CHROME_STORE.into()),
             edge: Some(EDGE_STORE.into()),
@@ -737,7 +737,7 @@ mod tests {
                 "{os:?} {browser:?}"
             );
         };
-        let file = "ai.copilotkit.openbot.recorder.json";
+        let file = "com.hemanathanv.adithyabot.recorder.json";
         let mac = |dir: &str| {
             format!("/home/a/Library/Application Support/{dir}/NativeMessagingHosts/{file}")
         };
@@ -750,7 +750,7 @@ mod tests {
         expect(Os::Linux, Browser::Edge, plain, &linux("microsoft-edge"));
         expect(Os::Linux, Browser::Chromium, plain, &linux("chromium"));
         let windows = PathBuf::from("/c/Local")
-            .join("OpenBot")
+            .join("Adithya-Bot")
             .join("recorder")
             .join(file);
         let with_local = UserDirs {
@@ -770,7 +770,7 @@ mod tests {
         let h = home();
         let xdg = PathBuf::from("/xdg");
         let chrome = PathBuf::from("/chrome-config");
-        let file = "NativeMessagingHosts/ai.copilotkit.openbot.recorder.json";
+        let file = "NativeMessagingHosts/com.hemanathanv.adithyabot.recorder.json";
         let with_xdg = UserDirs {
             xdg_config_home: Some(&xdg),
             ..UserDirs::at(&h)
@@ -847,7 +847,7 @@ mod tests {
             vec![xdg
                 .join("google-chrome")
                 .join("NativeMessagingHosts")
-                .join("ai.copilotkit.openbot.recorder.json")]
+                .join("com.hemanathanv.adithyabot.recorder.json")]
         );
     }
 
@@ -860,22 +860,22 @@ mod tests {
             home()
                 .join("AppData")
                 .join("Local")
-                .join("OpenBot")
+                .join("Adithya-Bot")
                 .join("recorder")
-                .join("ai.copilotkit.openbot.recorder.json")
+                .join("com.hemanathanv.adithyabot.recorder.json")
         );
     }
 
     #[test]
     fn registry_commands_set_the_default_value_under_each_browsers_key() {
         let path = Path::new(
-            "C:\\Users\\a\\AppData\\Local\\OpenBot\\recorder\\ai.copilotkit.openbot.recorder.json",
+            "C:\\Users\\a\\AppData\\Local\\Adithya-Bot\\recorder\\com.hemanathanv.adithyabot.recorder.json",
         );
         let argv = |key: &str| {
             vec![vec![
                 "reg.exe".to_string(),
                 "add".to_string(),
-                format!("{key}\\NativeMessagingHosts\\ai.copilotkit.openbot.recorder"),
+                format!("{key}\\NativeMessagingHosts\\com.hemanathanv.adithyabot.recorder"),
                 "/ve".to_string(),
                 "/t".to_string(),
                 "REG_SZ".to_string(),
@@ -962,9 +962,9 @@ mod tests {
         let got = stable_host_path(
             Os::Linux,
             Path::new("/tmp/.mount_abc/usr/bin/openbot-desktop"),
-            Some(Path::new("/home/a/OpenBot.AppImage")),
+            Some(Path::new("/home/a/Adithya-Bot.AppImage")),
         );
-        assert_eq!(got.unwrap(), PathBuf::from("/home/a/OpenBot.AppImage"));
+        assert_eq!(got.unwrap(), PathBuf::from("/home/a/Adithya-Bot.AppImage"));
     }
 
     #[test]
@@ -981,17 +981,17 @@ mod tests {
     fn a_translocated_mac_app_asks_to_be_moved() {
         let got = stable_host_path(
             Os::Mac,
-            Path::new("/private/var/folders/x/T/AppTranslocation/1/d/OpenBot.app/Contents/MacOS/openbot-desktop"),
+            Path::new("/private/var/folders/x/T/AppTranslocation/1/d/Adithya-Bot.app/Contents/MacOS/openbot-desktop"),
             None,
         );
         assert_eq!(
             got.unwrap_err().said,
-            "Move OpenBot Desktop to Applications to let the Recorder find it."
+            "Move Adithya-Bot Desktop to Applications to let the Recorder find it."
         );
     }
 
-    /// OpenBot Desktop 1.0.0, copied into Applications with `ditto` from its disk image and opened:
-    /// Gatekeeper ran it translocated, and the Recorder said "Move OpenBot Desktop to Applications"
+    /// Adithya-Bot Desktop 1.0.0, copied into Applications with `ditto` from its disk image and opened:
+    /// Gatekeeper ran it translocated, and the Recorder said "Move Adithya-Bot Desktop to Applications"
     /// to an app that was in Applications. The mount is as `mount` showed it that night. Unix paths,
     /// which Windows does not count as absolute.
     #[cfg(unix)]
@@ -999,7 +999,7 @@ mod tests {
     fn a_translocated_app_that_is_in_applications_names_its_real_path() {
         let mount = "/private/var/folders/15/cbm93f0549jbtwnp4vn063r00000gn/T/AppTranslocation/E35D6529-FB65-4C85-BC60-D38960D7E85A";
         let exe = PathBuf::from(format!(
-            "{mount}/d/OpenBot.app/Contents/MacOS/openbot-desktop"
+            "{mount}/d/Adithya-Bot.app/Contents/MacOS/openbot-desktop"
         ));
         let mounted = |from: &'static str| {
             move |path: &Path| {
@@ -1008,26 +1008,26 @@ mod tests {
             }
         };
         assert_eq!(
-            stable_host_path_with(Os::Mac, &exe, None, mounted("/Applications/OpenBot.app"))
+            stable_host_path_with(Os::Mac, &exe, None, mounted("/Applications/Adithya-Bot.app"))
                 .unwrap(),
-            PathBuf::from("/Applications/OpenBot.app/Contents/MacOS/openbot-desktop")
+            PathBuf::from("/Applications/Adithya-Bot.app/Contents/MacOS/openbot-desktop")
         );
         assert_eq!(
             stable_host_path_with(
                 Os::Mac,
                 &exe,
                 None,
-                mounted("/Users/a/Applications/OpenBot.app")
+                mounted("/Users/a/Applications/Adithya-Bot.app")
             )
             .unwrap(),
-            PathBuf::from("/Users/a/Applications/OpenBot.app/Contents/MacOS/openbot-desktop")
+            PathBuf::from("/Users/a/Applications/Adithya-Bot.app/Contents/MacOS/openbot-desktop")
         );
         // Still on the disk image, which goes when it is ejected: that one is asked to move.
         assert_eq!(
-            stable_host_path_with(Os::Mac, &exe, None, mounted("/Volumes/OpenBot/OpenBot.app"))
+            stable_host_path_with(Os::Mac, &exe, None, mounted("/Volumes/Adithya-Bot/Adithya-Bot.app"))
                 .unwrap_err()
                 .said,
-            "Move OpenBot Desktop to Applications to let the Recorder find it."
+            "Move Adithya-Bot Desktop to Applications to let the Recorder find it."
         );
         // A mount that is not this app's, or none at all, is never guessed through.
         for unrelated in [
@@ -1051,9 +1051,9 @@ mod tests {
 
     #[test]
     fn installed_paths_are_returned_unchanged() {
-        let mac = Path::new("/Applications/OpenBot.app/Contents/MacOS/openbot-desktop");
+        let mac = Path::new("/Applications/Adithya-Bot.app/Contents/MacOS/openbot-desktop");
         assert_eq!(stable_host_path(Os::Mac, mac, None).unwrap(), mac);
-        let windows = Path::new("C:\\Program Files\\OpenBot\\openbot-desktop.exe");
+        let windows = Path::new("C:\\Program Files\\Adithya-Bot\\openbot-desktop.exe");
         assert_eq!(
             stable_host_path(Os::Windows, windows, None).unwrap(),
             windows
@@ -1072,7 +1072,7 @@ mod tests {
         writer
             .present
             .insert(h.join("Library/Application Support/Microsoft Edge"));
-        let exe = Path::new("/Applications/OpenBot.app/Contents/MacOS/openbot-desktop");
+        let exe = Path::new("/Applications/Adithya-Bot.app/Contents/MacOS/openbot-desktop");
         let written = install(exe, UserDirs::at(&h), Os::Mac, &mut writer).unwrap();
         assert_eq!(written.len(), 2);
         assert_eq!(writer.files.len(), 2);
@@ -1108,7 +1108,7 @@ mod tests {
     #[test]
     fn a_browser_installed_after_the_first_round_gets_its_manifest_on_the_next() {
         let h = home();
-        let exe = Path::new("/Applications/OpenBot.app/Contents/MacOS/openbot-desktop");
+        let exe = Path::new("/Applications/Adithya-Bot.app/Contents/MacOS/openbot-desktop");
         let mut writer = Recording::default();
         writer
             .present
@@ -1129,7 +1129,7 @@ mod tests {
             .to_string_lossy()
             .contains("Microsoft Edge"));
         // A manifest that names another binary is put right.
-        let moved = Path::new("/Users/a/Applications/OpenBot.app/Contents/MacOS/openbot-desktop");
+        let moved = Path::new("/Users/a/Applications/Adithya-Bot.app/Contents/MacOS/openbot-desktop");
         install(moved, UserDirs::at(&h), Os::Mac, &mut writer).unwrap();
         assert_eq!(writer.files.len(), 4);
     }
@@ -1144,12 +1144,12 @@ mod tests {
         };
         // No browser is there yet: each key is written anyway, so one installed later finds the host.
         let mut writer = Recording::default();
-        let exe = Path::new("C:\\Program Files\\OpenBot\\openbot-desktop.exe");
+        let exe = Path::new("C:\\Program Files\\Adithya-Bot\\openbot-desktop.exe");
         let written = install(exe, dirs, Os::Windows, &mut writer).unwrap();
         let manifest = local
-            .join("OpenBot")
+            .join("Adithya-Bot")
             .join("recorder")
-            .join("ai.copilotkit.openbot.recorder.json");
+            .join("com.hemanathanv.adithyabot.recorder.json");
         assert_eq!(written, vec![manifest.clone()]);
         assert_eq!(writer.files.len(), 1);
         assert_eq!(writer.files[0].0, manifest);

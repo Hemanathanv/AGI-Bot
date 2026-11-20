@@ -13,6 +13,11 @@ on:
         required: true
         default: v1.1.1
         type: string
+      include_intelligence:
+        description: Mirror the optional Intelligence CLI images
+        required: false
+        default: true
+        type: boolean
   workflow_call:
     inputs:
       image_tag:
@@ -21,6 +26,10 @@ on:
       manifest_version:
         required: true
         type: string
+      include_intelligence:
+        required: false
+        default: true
+        type: boolean
 
 permissions:
   contents: read
@@ -41,6 +50,7 @@ jobs:
   intelligence:
     name: Import Intelligence images
     needs: images
+    if: inputs.include_intelligence
     runs-on: ubuntu-latest
     permissions:
       contents: read

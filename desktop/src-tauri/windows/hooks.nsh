@@ -272,10 +272,17 @@ Var OpenBotWaitAnswer
 !macro NSIS_HOOK_POSTUNINSTALL
   ${If} $UpdateMode <> 1
     DeleteRegKey HKCU "Software\Google\Chrome\NativeMessagingHosts\ai.copilotkit.openbot.recorder"
+    DeleteRegKey HKCU "Software\Google\Chrome\NativeMessagingHosts\com.hemanathanv.adithyabot.recorder"
     DeleteRegKey HKCU "Software\Microsoft\Edge\NativeMessagingHosts\ai.copilotkit.openbot.recorder"
+    DeleteRegKey HKCU "Software\Microsoft\Edge\NativeMessagingHosts\com.hemanathanv.adithyabot.recorder"
     DeleteRegKey HKCU "Software\Chromium\NativeMessagingHosts\ai.copilotkit.openbot.recorder"
+    DeleteRegKey HKCU "Software\Chromium\NativeMessagingHosts\com.hemanathanv.adithyabot.recorder"
     SetShellVarContext current
     Delete "$LOCALAPPDATA\OpenBot\recorder\ai.copilotkit.openbot.recorder.json"
+    Delete "$LOCALAPPDATA\Adithya-Bot\recorder\com.hemanathanv.adithyabot.recorder.json"
+    Delete "$LOCALAPPDATA\Adithya-Bot\recorder\recorder-store-extensions.json"
+    RMDir /r "$LOCALAPPDATA\Adithya-Bot\recorder"
+    RMDir /r "$LOCALAPPDATA\Adithya-Bot\local-computer"
     Delete "$LOCALAPPDATA\OpenBot\recorder\recorder-store-extensions.json"
     RMDir /r "$LOCALAPPDATA\OpenBot\recorder"
     RMDir /r "$LOCALAPPDATA\OpenBot\local-computer"

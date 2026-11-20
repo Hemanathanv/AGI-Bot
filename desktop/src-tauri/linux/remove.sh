@@ -34,8 +34,11 @@ getent passwd | while IFS=: read -r name _ uid _ _ home _; do
   runuser -u "$name" -- rm -rf -- \
     "$home/.local/share/openbot/local-computer" \
     "$home/.config/google-chrome/NativeMessagingHosts/ai.copilotkit.openbot.recorder.json" \
+    "$home/.config/google-chrome/NativeMessagingHosts/com.hemanathanv.adithyabot.recorder.json" \
     "$home/.config/microsoft-edge/NativeMessagingHosts/ai.copilotkit.openbot.recorder.json" \
+    "$home/.config/microsoft-edge/NativeMessagingHosts/com.hemanathanv.adithyabot.recorder.json" \
     "$home/.config/chromium/NativeMessagingHosts/ai.copilotkit.openbot.recorder.json" \
+    "$home/.config/chromium/NativeMessagingHosts/com.hemanathanv.adithyabot.recorder.json" \
     </dev/null >/dev/null 2>&1 || true
 done
 exit 0

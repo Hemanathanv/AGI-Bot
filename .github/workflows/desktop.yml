@@ -35,7 +35,7 @@ jobs:
   # Fast formatting and lint checks. Rust regression tests run once per platform below.
   core:
     name: core
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -50,8 +50,8 @@ jobs:
           workspaces: desktop/src-tauri
       # Linux is the only target needing system libraries, and it needs them even to check.
       - run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+          sudo apt-get -o Acquire::Retries=5 -o Acquire::Queue-Mode=access update -qq
+          sudo apt-get -o Acquire::Retries=5 -o Acquire::Queue-Mode=access install -y -qq libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
       - run: cargo fmt --check
         working-directory: desktop/src-tauri
       - run: cargo clippy --all-targets -- -D warnings
@@ -60,7 +60,7 @@ jobs:
   # The three artifacts, built by the shared workflow. A pull request build is unchanged: unpinned, no CLI, kept 7 days.
   app:
     name: app
-    uses: $/.github/workflows/desktop-build.yml
+    uses: ./.github/workflows/desktop-build.yml
     with:
       ref: ${{ github.event.pull_request.head.sha || github.sha }}
       channel: internal

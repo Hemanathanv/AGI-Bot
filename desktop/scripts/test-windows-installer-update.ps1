@@ -31,11 +31,13 @@ $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
 $tauri = (Resolve-Path (Join-Path $PSScriptRoot '..\src-tauri')).Path
-$product = 'OpenBot'
+$config = Get-Content -Raw -LiteralPath (Join-Path $tauri 'tauri.conf.json') | ConvertFrom-Json
+$product = [string]$config.productName
+$publisher = [string]$config.bundle.publisher
 $binary = 'openbot-desktop'
-$bundleId = 'ai.copilotkit.openbot.desktop'
+$bundleId = [string]$config.identifier
 $uninstallKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\$product"
-$locationKey = "HKCU:\Software\CopilotKit\$product"
+$locationKey = "HKCU:\Software\$publisher\$product"
 $runKey = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
 $marker = 'OpenBotUpdateCheck'
 $scratch = if ($env:RUNNER_TEMP) { $env:RUNNER_TEMP } else { [System.IO.Path]::GetTempPath() }

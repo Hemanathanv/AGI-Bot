@@ -267,13 +267,14 @@ logged "$LOGS/tauri-build.log" env \
   --config src-tauri/tauri.bundled-cli.conf.json \
   --bundles app
 cd "$ROOT"
-built_app="$TARGET_DIR/release/bundle/macos/OpenBot.app"
+product_name="$(jq -r '.productName' desktop/src-tauri/tauri.conf.json)"
+built_app="$TARGET_DIR/release/bundle/macos/$product_name.app"
 [ -d "$built_app" ] || die "the build made no $built_app"
 APP_DIR="$STATE/apps/$VERSION"
 rm -rf "$APP_DIR"
 mkdir -p "$APP_DIR"
-ditto "$built_app" "$APP_DIR/OpenBot.app"
-APP="$APP_DIR/OpenBot.app"
+ditto "$built_app" "$APP_DIR/$product_name.app"
+APP="$APP_DIR/$product_name.app"
 stage_done
 
 stage "check the app"
@@ -296,4 +297,4 @@ echo "Manifest: $MANIFEST"
 jq -r '.images | to_entries[] | "  \(.key)\t\(.value.reference)"' "$MANIFEST" | column -t
 echo
 echo "App: $APP"
-echo "Install: quit OpenBot, then  rm -rf /Applications/OpenBot.app && ditto \"$APP\" /Applications/OpenBot.app"
+echo "Install: quit $product_name, then replace /Applications/$product_name.app with $APP"

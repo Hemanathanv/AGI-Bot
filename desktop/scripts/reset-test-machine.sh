@@ -9,14 +9,16 @@
 #   desktop/scripts/reset-test-machine.sh [--dry-run] [--yes] [--remove-app] [--images]
 set -uo pipefail
 
-BUNDLE_ID=ai.copilotkit.openbot.desktop
 ROOT="${OPENBOT_ROOT:-$HOME/OpenBot}"
-APP=/Applications/OpenBot.app
+REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+BUNDLE_ID="$(jq -r '.identifier' "$REPO/desktop/src-tauri/tauri.conf.json")"
+PRODUCT_NAME="$(jq -r '.productName' "$REPO/desktop/src-tauri/tauri.conf.json")"
+APP="/Applications/$PRODUCT_NAME.app"
 CLI_CONFIG="$HOME/Library/Preferences/copilotkit-config-nodejs"
 # Compose projects: earlier apps used the folder's name, current ones `openbot-desktop`.
 PROJECTS=(openbot openbot-desktop)
 MACHINE=openbot # the Podman machine OpenBot creates (acquire::MACHINE)
-APP_PROCESS="OpenBot.app/Contents/MacOS/openbot-desktop"
+APP_PROCESS="$PRODUCT_NAME.app/Contents/MacOS/openbot-desktop"
 
 dry=0 yes=0 remove_app=0 images=0
 for arg in "$@"; do

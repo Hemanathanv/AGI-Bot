@@ -22,12 +22,16 @@ param(
 )
 $ErrorActionPreference = 'Continue'
 
-$BundleId = 'ai.copilotkit.openbot.desktop'
+$repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
+$config = Get-Content -Raw -LiteralPath (Join-Path $repo 'desktop\src-tauri\tauri.conf.json') | ConvertFrom-Json
+$recorder = Get-Content -Raw -LiteralPath (Join-Path $repo 'shared\recorder-extension.json') | ConvertFrom-Json
+$BundleId = [string]$config.identifier
+$Product = [string]$config.productName
 $Root = if ($env:OPENBOT_ROOT) { $env:OPENBOT_ROOT } else { Join-Path $HOME 'OpenBot' }
-$AppDir = Join-Path $env:LOCALAPPDATA 'OpenBot'        # the per-user NSIS install, beside the Recorder's files
+$AppDir = Join-Path $env:LOCALAPPDATA $Product
 $Projects = @('openbot', 'openbot-desktop')            # Compose projects: earlier apps used the folder's name, newer ones 'openbot-desktop'
 $Machine = 'openbot'                                   # the Podman machine OpenBot creates (acquire::MACHINE)
-$HostName = 'ai.copilotkit.openbot.recorder'
+$HostName = [string]$recorder.nativeHost
 
 function Say($text) { Write-Host "==> $text" -ForegroundColor Cyan }
 function Note($text) { Write-Host "    $text" }
@@ -162,8 +166,8 @@ foreach ($vendor in @('Google\Chrome', 'Microsoft\Edge', 'Chromium')) {
   if (Test-Path $key) { Act "remove registry key $key" { Remove-Item -Path $key -Recurse -Force } }
 }
 $runOnce = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\RunOnce'
-if (Get-ItemProperty -Path $runOnce -Name 'OpenBot' -ErrorAction SilentlyContinue) {
-  Act 'remove the RunOnce entry OpenBot left for a restart' { Remove-ItemProperty -Path $runOnce -Name 'OpenBot' }
+if (Get-ItemProperty -Path $runOnce -Name $Product -ErrorAction SilentlyContinue) {
+  Act "remove the RunOnce entry $Product left for a restart" { Remove-ItemProperty -Path $runOnce -Name $Product }
 }
 
 if ($RemoveApp) {

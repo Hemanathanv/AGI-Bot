@@ -32,6 +32,7 @@ artifacts="${ARTIFACTS:-artifacts}"
 make_latest="${MAKE_LATEST:-false}"
 delay="${FEED_RETRY_DELAY:-15}"
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+product="$(jq -r '.productName' "$root/desktop/src-tauri/tauri.conf.json")"
 
 version="$(jq -r .version "$artifacts/build-version.json")"
 if [ "$version" != "${RELEASE_TAG#v}" ]; then
@@ -73,17 +74,17 @@ if [ -n "$pinned" ]; then
 fi
 
 gh release upload "$RELEASE_TAG" -R "$GITHUB_REPOSITORY" \
-  "$artifacts/OpenBot-darwin-aarch64.app.tar.gz" \
-  "$artifacts/OpenBot-darwin-aarch64.app.tar.gz.sig" \
-  "$artifacts/OpenBot-darwin-x86_64.app.tar.gz" \
-  "$artifacts/OpenBot-darwin-x86_64.app.tar.gz.sig" --clobber
+  "$artifacts/$product-darwin-aarch64.app.tar.gz" \
+  "$artifacts/$product-darwin-aarch64.app.tar.gz.sig" \
+  "$artifacts/$product-darwin-x86_64.app.tar.gz" \
+  "$artifacts/$product-darwin-x86_64.app.tar.gz.sig" --clobber
 gh release upload "$RELEASE_TAG" -R "$GITHUB_REPOSITORY" "${uploads[@]}" --clobber
 
 # Both architectures' archives into latest.json, written from their real `.sig` files, beside the
 # Windows installer that Desktop Windows signing lists there whether it ran first or runs next.
 VERSION="$version" "$root/scripts/release-update-feed.sh" \
-  "darwin-aarch64=$artifacts/OpenBot-darwin-aarch64.app.tar.gz" \
-  "darwin-x86_64=$artifacts/OpenBot-darwin-x86_64.app.tar.gz"
+  "darwin-aarch64=$artifacts/$product-darwin-aarch64.app.tar.gz" \
+  "darwin-x86_64=$artifacts/$product-darwin-x86_64.app.tar.gz"
 
 # Latest once Windows signing has attached its installer and listed it too, and the feed check when
 # it is.
