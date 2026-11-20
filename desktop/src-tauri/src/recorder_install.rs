@@ -407,7 +407,9 @@ fn stable_host_path_with(
             .and_then(|(on, from)| untranslocated(current_exe, &on, &from))
             .filter(|original| !original.starts_with("/Volumes"))
             .ok_or_else(|| {
-                Problem::plain("Move Adithya-Bot Desktop to Applications to let the Recorder find it.")
+                Problem::plain(
+                    "Move Adithya-Bot Desktop to Applications to let the Recorder find it.",
+                )
             }),
         Os::Mac | Os::Windows => Ok(current_exe.to_path_buf()),
     }
@@ -1008,8 +1010,13 @@ mod tests {
             }
         };
         assert_eq!(
-            stable_host_path_with(Os::Mac, &exe, None, mounted("/Applications/Adithya-Bot.app"))
-                .unwrap(),
+            stable_host_path_with(
+                Os::Mac,
+                &exe,
+                None,
+                mounted("/Applications/Adithya-Bot.app")
+            )
+            .unwrap(),
             PathBuf::from("/Applications/Adithya-Bot.app/Contents/MacOS/openbot-desktop")
         );
         assert_eq!(
@@ -1024,9 +1031,14 @@ mod tests {
         );
         // Still on the disk image, which goes when it is ejected: that one is asked to move.
         assert_eq!(
-            stable_host_path_with(Os::Mac, &exe, None, mounted("/Volumes/Adithya-Bot/Adithya-Bot.app"))
-                .unwrap_err()
-                .said,
+            stable_host_path_with(
+                Os::Mac,
+                &exe,
+                None,
+                mounted("/Volumes/Adithya-Bot/Adithya-Bot.app")
+            )
+            .unwrap_err()
+            .said,
             "Move Adithya-Bot Desktop to Applications to let the Recorder find it."
         );
         // A mount that is not this app's, or none at all, is never guessed through.
@@ -1129,7 +1141,8 @@ mod tests {
             .to_string_lossy()
             .contains("Microsoft Edge"));
         // A manifest that names another binary is put right.
-        let moved = Path::new("/Users/a/Applications/Adithya-Bot.app/Contents/MacOS/openbot-desktop");
+        let moved =
+            Path::new("/Users/a/Applications/Adithya-Bot.app/Contents/MacOS/openbot-desktop");
         install(moved, UserDirs::at(&h), Os::Mac, &mut writer).unwrap();
         assert_eq!(writer.files.len(), 4);
     }

@@ -77,7 +77,7 @@ pub struct MachineImage {
     pub size: u64,
 }
 
-/// The repository the machine images are in, on quay.io and in downloads.copilotkit.ai's copy.
+/// The repository that holds the pinned machine images on quay.io.
 pub const MACHINE_OS_REPOSITORY: &str = "podman/machine-os";
 
 /// The machine image Podman would pull on this kind of computer, or `None` where OpenBot never
@@ -112,8 +112,7 @@ pub fn machine_image() -> Option<MachineImage> {
     machine_image_for(std::env::consts::OS, crate::windows::machine_arch())
 }
 
-/// Every machine image reference downloads.copilotkit.ai copies (`release_images`), by the
-/// artifact manifest's digest.
+/// Every pinned machine image reference, by the artifact manifest's digest.
 pub fn machine_image_references() -> Vec<String> {
     [
         ("macos", "aarch64"),
@@ -127,19 +126,12 @@ pub fn machine_image_references() -> Vec<String> {
 }
 
 impl MachineImage {
-    /// Where to download it from: downloads.copilotkit.ai's copy, then quay.io.
+    /// Download the pinned machine image directly from quay.io.
     pub fn sources(&self) -> Vec<String> {
-        vec![
-            format!(
-                "{}/v2/quay.io/{MACHINE_OS_REPOSITORY}/blobs/{}",
-                crate::deployment::DOWNLOADS,
-                self.blob
-            ),
-            format!(
-                "https://quay.io/v2/{MACHINE_OS_REPOSITORY}/blobs/{}",
-                self.blob
-            ),
-        ]
+        vec![format!(
+            "https://quay.io/v2/{MACHINE_OS_REPOSITORY}/blobs/{}",
+            self.blob
+        )]
     }
 
     pub fn sha256(&self) -> &'static str {

@@ -39,7 +39,7 @@ use std::sync::Arc;
 use std::time::Duration;
 
 /// Tauri's bundle identifier for OpenBot Desktop (`tauri.conf.json` `identifier`).
-const APP_IDENTIFIER: &str = "ai.copilotkit.openbot.desktop";
+const APP_IDENTIFIER: &str = "com.hemanathanv.adithyabot";
 
 /// The largest message either way. Chrome refuses a host message over 1 MB, and the extension sends
 /// only a few bytes, so a longer length prefix is a broken or hostile pipe.
@@ -510,7 +510,7 @@ mod tests {
     use std::time::Instant;
 
     const ID: &str = "icpcnhgjghecmklnjbccdgdicklblcgd";
-    const DESKTOP: &str = "ai.copilotkit.openbot.desktop";
+    const DESKTOP: &str = "com.hemanathanv.adithyabot";
 
     fn args(list: &[&str]) -> Vec<OsString> {
         list.iter().map(OsString::from).collect()

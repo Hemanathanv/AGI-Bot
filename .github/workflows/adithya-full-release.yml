@@ -41,8 +41,29 @@ jobs:
             exit 1
           fi
 
-  images:
+  desktop_checks:
     needs: validate
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+      - run: |
+          sudo apt-get -o Acquire::Retries=5 -o Acquire::Queue-Mode=access update -qq
+          sudo apt-get -o Acquire::Retries=5 -o Acquire::Queue-Mode=access install -y -qq libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+      - run: cargo fmt --check
+        working-directory: desktop/src-tauri
+      - run: cargo clippy --all-targets -- -D warnings
+        working-directory: desktop/src-tauri
+
+  images:
+    needs: [validate, desktop_checks]
     uses: ./.github/workflows/import-openbot-images.yml
     with:
       image_tag: ${{ inputs.version }}

@@ -2,8 +2,8 @@
   {
     "name": "official",
     "expected": {
-      "id": "CopilotKit/OpenBot",
-      "repository": "CopilotKit/OpenBot",
+      "id": "Hemanathanv/AGI-Bot",
+      "repository": "Hemanathanv/AGI-Bot",
       "channel": "stable"
     }
   },

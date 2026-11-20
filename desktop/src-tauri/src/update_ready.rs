@@ -513,13 +513,13 @@ mod tests {
             .contains("is the list for v1.0.0"));
         assert!(read_list(b"<html>403</html>", &v("1.0.0")).is_err());
         assert_eq!(
-            list_url("CopilotKit/OpenBot", &v("1.0.1")),
-            "https://github.com/CopilotKit/OpenBot/releases/download/v1.0.1/desktop-images.json"
+            list_url("Hemanathanv/AGI-Bot", &v("1.0.1")),
+            "https://github.com/Hemanathanv/AGI-Bot/releases/download/v1.0.1/desktop-images.json"
         );
-        // downloads.copilotkit.ai's copy is asked first.
+        // This distribution does not use the upstream downloads mirror.
         assert_eq!(
-            crate::deployment::mirrored(&list_url("CopilotKit/OpenBot", &v("1.0.1"))).as_deref(),
-            Some("https://downloads.copilotkit.ai/releases/v1.0.1/desktop-images.json")
+            crate::deployment::mirrored(&list_url("Hemanathanv/AGI-Bot", &v("1.0.1"))),
+            None
         );
     }
 

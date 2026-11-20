@@ -109,9 +109,9 @@ pub fn resolve_version(root: &Path) -> Result<String, String> {
     })
 }
 
-/// The app update feed for the Latest release, copied to downloads.copilotkit.ai as each stable
-/// release becomes Latest.
-const LATEST_FEED: &str = "https://downloads.copilotkit.ai/latest/latest.json";
+/// The app update feed for this distribution's Latest release.
+const LATEST_FEED: &str =
+    "https://github.com/Hemanathanv/AGI-Bot/releases/latest/download/latest.json";
 
 /// The release tag the update feed names: its `version` is the tag without its `v`.
 fn feed_tag(body: &[u8]) -> Result<String, String> {

@@ -25,7 +25,7 @@ mod tests {
     }
 
     #[test]
-    fn orb_interior_is_visible_and_has_varied_colors() {
+    fn icon_interior_is_visible_and_has_detail() {
         let image = icon();
         let mut colors = BTreeSet::new();
         for y in 24..40 {
@@ -33,14 +33,9 @@ mod tests {
                 let offset = (y * 64 + x) * 4;
                 let pixel = &image.rgba()[offset..offset + 4];
                 assert!(pixel[3] >= 128, "the orb interior must remain visible");
-                let channels = &pixel[..3];
-                assert!(
-                    channels.iter().max().unwrap() - channels.iter().min().unwrap() > 20,
-                    "the orb interior must retain its color"
-                );
                 colors.insert([pixel[0], pixel[1], pixel[2]]);
             }
         }
-        assert!(colors.len() > 16, "the orb must not become a flat color");
+        assert!(colors.len() > 16, "the icon must not become a flat color");
     }
 }

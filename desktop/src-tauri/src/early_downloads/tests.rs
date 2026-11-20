@@ -875,10 +875,7 @@ fn the_machine_images_belong_to_the_podman_this_app_installs() {
     let mac = machine_image_for("macos", "aarch64").unwrap();
     assert_eq!(
         mac.sources(),
-        [
-            "https://downloads.copilotkit.ai/v2/quay.io/podman/machine-os/blobs/sha256:cd711cd582d301f11616281f0b0098de7cad26b050b7317b8bd3f3ac667c0d21",
-            "https://quay.io/v2/podman/machine-os/blobs/sha256:cd711cd582d301f11616281f0b0098de7cad26b050b7317b8bd3f3ac667c0d21",
-        ]
+        ["https://quay.io/v2/podman/machine-os/blobs/sha256:cd711cd582d301f11616281f0b0098de7cad26b050b7317b8bd3f3ac667c0d21"]
     );
     assert_eq!(machine_image_references().len(), 3);
 }

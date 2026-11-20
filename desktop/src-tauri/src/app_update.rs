@@ -121,10 +121,8 @@ pub fn endpoints(updater: Option<&Value>) -> Option<Vec<reqwest::Url>> {
 }
 
 /// The feed to download an update from again when the download from `failed` did not finish: the
-/// next feed in `endpoints` after the one on `failed`'s host, on another host. The first feed,
-/// downloads.copilotkit.ai, names its own copy of the archive, and the updater moves on to the next
-/// feed only when reading a feed fails, never when a download does; so a download from the mirror
-/// that fails is tried once more from GitHub's feed. A download from GitHub, the last feed, is not.
+/// next feed in `endpoints` after the one on `failed`'s host, on another host. This distribution
+/// currently has one GitHub feed, so a failed download has no fallback feed.
 pub fn feed_after(failed: &reqwest::Url, endpoints: &[reqwest::Url]) -> Option<reqwest::Url> {
     let from = endpoints
         .iter()
@@ -836,23 +834,21 @@ mod tests {
     }
 
     #[test]
-    fn a_download_from_the_mirror_that_fails_is_tried_from_githubs_feed_and_githubs_is_not() {
+    fn a_failed_download_from_the_owners_feed_has_no_upstream_fallback() {
         let signed: Value = serde_json::from_str(include_str!("../tauri.macos-signing.conf.json"))
             .expect("the signing overlay is JSON");
         let feeds = endpoints(Some(&signed["plugins"]["updater"])).unwrap();
         let url = |address: &str| reqwest::Url::parse(address).unwrap();
         assert_eq!(
             feed_after(
-                &url("https://downloads.copilotkit.ai/releases/v1.0.0/OpenBot.app.tar.gz"),
+                &url("https://github.com/Hemanathanv/AGI-Bot/releases/download/v1.0.0/Adithya-Bot.app.tar.gz"),
                 &feeds
             ),
-            Some(url(
-                "https://github.com/Hemanathanv/AGI-Bot/releases/latest/download/latest.json"
-            ))
+            None
         );
         for failed in [
-            "https://github.com/CopilotKit/OpenBot/releases/download/v1.0.0/OpenBot.app.tar.gz",
-            "https://example.com/OpenBot.app.tar.gz",
+            "https://github.com/Hemanathanv/AGI-Bot/releases/download/v1.0.0/Adithya-Bot.app.tar.gz",
+            "https://example.com/Adithya-Bot.app.tar.gz",
         ] {
             assert_eq!(feed_after(&url(failed), &feeds), None, "{failed}");
         }
@@ -867,7 +863,7 @@ mod tests {
         let found = endpoints(Some(&signed["plugins"]["updater"])).unwrap();
         assert_eq!(
             found.first().map(reqwest::Url::as_str),
-            Some("https://downloads.copilotkit.ai/latest/latest.json")
+            Some("https://github.com/Hemanathanv/AGI-Bot/releases/latest/download/latest.json")
         );
         // Plain HTTP only where the updater would also take it.
         let local = serde_json::json!({ "endpoints": ["http://127.0.0.1:9/latest.json"] });
@@ -1164,7 +1160,7 @@ mod tests {
     /// downloads mirror first. The setup window's check used to ask a separate mechanism that
     /// release builds do not carry, and said updates were not configured.
     #[test]
-    fn a_signed_release_is_offered_updates_from_the_downloads_mirror() {
+    fn a_signed_release_is_offered_updates_from_our_github_feed() {
         for overlay in [
             include_str!("../tauri.windows-signing.conf.json"),
             include_str!("../tauri.macos-signing.conf.json"),
@@ -1175,7 +1171,7 @@ mod tests {
             assert_eq!(feed.current, v("0.3.2"));
             assert_eq!(
                 feed.endpoints.first().map(reqwest::Url::as_str),
-                Some("https://downloads.copilotkit.ai/latest/latest.json")
+                Some("https://github.com/Hemanathanv/AGI-Bot/releases/latest/download/latest.json")
             );
             assert_eq!(Some(feed.platform), platform());
         }
