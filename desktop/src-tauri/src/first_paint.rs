@@ -39,7 +39,7 @@ the wait is a fraction of a second, not Windows' minute.
 */
 
 /// The cover's heading: the words the setup page uses while OpenBot gets ready.
-pub const HEADING: &str = "Getting OpenBot ready";
+pub const HEADING: &str = "Getting Adithya-Bot ready";
 /// The cover's second line.
 #[cfg_attr(not(windows), allow(dead_code))]
 pub const LINE: &str = "This can take a minute.";

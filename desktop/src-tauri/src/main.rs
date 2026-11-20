@@ -5543,7 +5543,7 @@ fn stop_for_uninstall(asked: uninstall::Asked) -> i32 {
 
 /// The app's identifier as built, the name of each folder Tauri keeps for it. Beside an installed
 /// OpenBot the app goes by another (`side_by_side`).
-const APP_IDENTIFIER: &str = "ai.copilotkit.openbot.desktop";
+const APP_IDENTIFIER: &str = "com.hemanathanv.adithyabot";
 
 /**
 The app's context, under an identifier of its own when it is a second OpenBot beside an installed
@@ -7834,7 +7834,7 @@ mod app_page_tests {
         let folder = logging::folder(app.handle()).unwrap();
         assert_eq!(folder, app.path().app_log_dir().unwrap());
         let identifier = app.config().identifier.clone();
-        assert_eq!(identifier, "ai.copilotkit.openbot.desktop");
+        assert_eq!(identifier, "com.hemanathanv.adithyabot");
         let home = PathBuf::from(
             std::env::var_os(if cfg!(windows) { "USERPROFILE" } else { "HOME" }).unwrap(),
         );
@@ -8174,8 +8174,8 @@ mod app_page_tests {
     fn windows_toasts_name_the_app_the_start_menu_shortcut_carries() {
         let (app, _) = app();
         let config = app.config();
-        assert_eq!(config.identifier, "ai.copilotkit.openbot.desktop");
-        assert_eq!(config.product_name.as_deref(), Some("OpenBot"));
+        assert_eq!(config.identifier, "com.hemanathanv.adithyabot");
+        assert_eq!(config.product_name.as_deref(), Some("Adithya-Bot"));
         // Read from the files the installer is built from, the base and every overlay a build
         // passes with --config: the app's runtime config leaves the bundle settings out.
         let folder = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
@@ -8197,10 +8197,10 @@ mod app_page_tests {
                 );
             }
             if let Some(identifier) = file.get("identifier") {
-                assert_eq!(identifier, "ai.copilotkit.openbot.desktop", "{name}");
+                assert_eq!(identifier, "com.hemanathanv.adithyabot", "{name}");
             }
             if let Some(product) = file.get("productName") {
-                assert_eq!(product, "OpenBot", "{name}");
+                assert_eq!(product, "Adithya-Bot", "{name}");
             }
             checked += 1;
         }
@@ -17786,7 +17786,7 @@ mod tests {
     fn the_main_window_built_in_setup_keeps_every_property_the_configured_window_had() {
         // The entry as it stood while Tauri created the window from it.
         let pinned = serde_json::json!({
-            "title": "OpenBot",
+            "title": "Adithya-Bot",
             "width": 1000,
             "height": 800,
             "minWidth": 720,
