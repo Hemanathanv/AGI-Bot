@@ -742,10 +742,11 @@ mod tests {
         for download in [
             crate::install::podman_download(),
             crate::install::compose_download(),
-        ] {
-            if let Ok(download) = download {
-                assert_eq!(mirrored(&download.url), None);
-            }
+        ]
+        .into_iter()
+        .flatten()
+        {
+            assert_eq!(mirrored(&download.url), None);
         }
     }
 

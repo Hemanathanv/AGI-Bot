@@ -109,25 +109,6 @@ pub fn resolve_version(root: &Path) -> Result<String, String> {
     })
 }
 
-/// The app update feed for this distribution's Latest release.
-const LATEST_FEED: &str =
-    "https://github.com/Hemanathanv/AGI-Bot/releases/latest/download/latest.json";
-
-/// The release tag the update feed names: its `version` is the tag without its `v`.
-fn feed_tag(body: &[u8]) -> Result<String, String> {
-    #[derive(Deserialize)]
-    struct Feed {
-        version: String,
-    }
-    let feed: Feed = serde_json::from_slice(body)
-        .map_err(|error| format!("{LATEST_FEED} is not readable: {error}"))?;
-    let version = feed.version.trim().trim_start_matches('v');
-    if version.is_empty() {
-        return Err(format!("{LATEST_FEED} names no version"));
-    }
-    Ok(format!("v{version}"))
-}
-
 /// With an installed deployment of this build's kind, or one laid out completely, its own version.
 /// Otherwise the pin's version when there is one, and the newer of `latest` and `own` (the app's
 /// own release) only when there is not.
@@ -193,15 +174,6 @@ mod tests {
         let root = temp_root(label);
         std::fs::create_dir_all(&root).unwrap();
         root
-    }
-
-    #[test]
-    fn reads_the_latest_release_from_the_update_feed() {
-        // The shape downloads.copilotkit.ai/latest/latest.json had for v0.3.3.
-        let feed = br#"{"version":"0.3.3","notes":"...","pub_date":"2026-11-07T00:00:00Z","platforms":{}}"#;
-        assert_eq!(feed_tag(feed).unwrap(), "v0.3.3");
-        assert!(feed_tag(br#"{"version":""}"#).is_err());
-        assert!(feed_tag(b"<Error><Code>AccessDenied</Code></Error>").is_err());
     }
 
     #[test]
