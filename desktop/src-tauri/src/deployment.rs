@@ -739,7 +739,10 @@ mod tests {
         ] {
             assert_eq!(mirrored(&github), None, "{github}");
         }
-        for download in [crate::install::podman_download(), crate::install::compose_download()] {
+        for download in [
+            crate::install::podman_download(),
+            crate::install::compose_download(),
+        ] {
             if let Ok(download) = download {
                 assert_eq!(mirrored(&download.url), None);
             }
